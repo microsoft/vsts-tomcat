@@ -7,6 +7,9 @@ var sourcePaths = {
     typescriptFiles: "src/**/*.ts",
     copyFiles: ["src/Tasks/**/*.json", "src/Tasks/**/*.md"]
 };
+var testPaths = {
+    typescriptFiles: "tests/**/*.ts"
+};
 
 var compilation = tsb.create({
     target: 'es5',
@@ -20,7 +23,7 @@ gulp.task("clean", function() {
 });
 
 gulp.task("compile", function () {
-    return gulp.src([sourcePaths.typescriptFiles], { base: "." })
+    return gulp.src([sourcePaths.typescriptFiles, testPaths.typescriptFiles], { base: "." })
         .pipe(compilation())
         .pipe(gulp.dest(buildDirectory));
 });
