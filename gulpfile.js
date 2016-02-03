@@ -5,8 +5,7 @@ var tsb = require("gulp-tsb");
 var buildDirectory = "_build";
 var sourcePaths = {
     typescriptFiles: "src/**/*.ts",
-    copyFiles: ["src/Tasks/**/*.json", "src/Tasks/**/*.md"],
-    tasksPath: "src/Tasks"
+    copyFiles: ["src/Tasks/**/*.json", "src/Tasks/**/*.md"]
 };
 
 var compilation = tsb.create({
