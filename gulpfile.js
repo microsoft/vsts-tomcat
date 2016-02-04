@@ -49,7 +49,8 @@ gulp.task("build", ["compile"], function() {
 gulp.task("test", ["build"], function() {
     return gulp.src(testPaths.compiledTestFiles, {read: false})
         .pipe(mocha())
-        .pipe(istanbul.writeReports({dir: codeCoverageDir}));
+        .pipe(istanbul.writeReports({dir: codeCoverageDir}))
+        .pipe(istanbul.enforceThresholds({thresholds: {global: 100}}));
 });
 
 gulp.task("default", ["test"]);
