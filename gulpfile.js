@@ -1,15 +1,17 @@
 var del = require("del");
 var gulp = require("gulp");
+var mocha = require("gulp-mocha");
 var tsb = require("gulp-tsb");
 var tslint = require("gulp-tslint");
 
 var buildDirectory = "_build";
 var sourcePaths = {
     typescriptFiles: "src/**/*.ts",
-    copyFiles: ["src/Tasks/**/*.json", "src/Tasks/**/*.md"]
+    copyFiles: ["src/tasks/**/*.json", "src/tasks/**/*.md"]
 };
 var testPaths = {
-    typescriptFiles: "tests/**/*.ts"
+    typescriptFiles: "tests/**/*.ts",
+    compiledJsTestFiles: buildDirectory + "/tests/**/*Tests.js"
 };
 
 var compilation = tsb.create({
@@ -40,4 +42,9 @@ gulp.task("build", ["compile"], function() {
         .pipe(gulp.dest(buildDirectory));
 });
 
-gulp.task("default", ["build"]);
+gulp.task("test", ["build"], function() {
+    return gulp.src(testPaths.compiledJsTestFiles, {read: false})
+        .pipe(mocha());
+});
+
+gulp.task("default", ["test"]);
