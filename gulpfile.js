@@ -1,5 +1,6 @@
 var del = require("del");
 var gulp = require("gulp");
+var istanbul = require("gulp-istanbul");
 var mocha = require("gulp-mocha");
 var tsb = require("gulp-tsb");
 var tslint = require("gulp-tslint");
@@ -11,8 +12,9 @@ var sourcePaths = {
 };
 var testPaths = {
     typescriptFiles: "tests/**/*.ts",
-    compiledJsTestFiles: buildDirectory + "/tests/**/*Tests.js"
+    compiledTestFiles: buildDirectory + "/tests/**/*Tests.js"
 };
+var codeCoverageDir = buildDirectory + "/codeCoverage";
 
 var compilation = tsb.create({
     target: 'es5',
@@ -34,7 +36,9 @@ gulp.task("lint", ["clean"], function() {
 gulp.task("compile", ["lint"], function () {
     return gulp.src([sourcePaths.typescriptFiles, testPaths.typescriptFiles], { base: "." })
         .pipe(compilation())
-        .pipe(gulp.dest(buildDirectory));
+        .pipe(gulp.dest(buildDirectory))
+        .pipe(istanbul({includeUntested: true}))
+        .pipe(istanbul.hookRequire());
 });
 
 gulp.task("build", ["compile"], function() {
@@ -43,8 +47,9 @@ gulp.task("build", ["compile"], function() {
 });
 
 gulp.task("test", ["build"], function() {
-    return gulp.src(testPaths.compiledJsTestFiles, {read: false})
-        .pipe(mocha());
+    return gulp.src(testPaths.compiledTestFiles, {read: false})
+        .pipe(mocha())
+        .pipe(istanbul.writeReports({dir: codeCoverageDir}));
 });
 
 gulp.task("default", ["test"]);
