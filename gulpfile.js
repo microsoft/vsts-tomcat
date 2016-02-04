@@ -8,7 +8,7 @@ var tslint = require("gulp-tslint");
 var buildDirectory = "_build";
 var sourcePaths = {
     typescriptFiles: "src/**/*.ts",
-    copyFiles: ["src/tasks/**/*.json", "src/tasks/**/*.md"]
+    copyFiles: ["src/tasks/**/*.json", "src/tasks/**/*.md", "src/tasks/**/invoke*.js"]
 };
 var testPaths = {
     typescriptFiles: "tests/**/*.ts",
