@@ -76,7 +76,7 @@
     "instanceNameFormat": "Deploy application (war file) to a tomcat server",
     "execution": {
         "Node": {
-            "target": "tomcatDeployment.js",
+            "target": "invokeTomcatDeployment.js",
             "argumentFormat": ""
         }
     }
