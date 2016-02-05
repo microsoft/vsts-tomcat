@@ -1,0 +1,69 @@
+{
+    "manifestVersion": 1,
+    "id": "tomcatDeploymentApp",
+    "name": "Tomcat Deployment",
+    "version": "0.0.1",
+    "publisher": "ms",
+    "description": "Deploy application (war file) to a tomcat server",
+    "public": true,
+    "galleryFlags": [
+        "Preview"
+    ],
+    "icons": {
+        "default": "images/tomcat_logo.png",
+        "large": "images/tomcat_logo_large.png"
+    },
+    "categories": [
+        "Build and release"
+    ],
+    "tags": [],
+    "links": {
+        "support": {
+            "uri": "https://github.com/Microsoft/vsts-tomcat"
+        },
+        "pricing": {
+            "uri": "https://github.com/Microsoft/vsts-tomcat"
+        },
+        "home": {
+            "uri": "https://github.com/Microsoft/vsts-tomcat"
+        }
+    },
+    "branding": {
+        "color": "#f6f7fb",
+        "theme": "light"
+    },
+    "content": {
+        "details": {
+            "path": "tomcat.md"
+        }
+    },
+    "files": [
+        {
+            "path": "tasks/tomcatDeployment"
+        },
+        {
+            "path": "images",
+            "addressable": true
+        }
+    ],
+    "scopes": [
+        "vso.build_execute"
+    ],
+    "targets": [
+        {
+            "id": "Microsoft.VisualStudio.Services"
+        }
+    ],
+    "contributions": [
+        {
+            "id": "tomcatDeployment-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/tomcatDeployment"
+            }
+        }
+    ]
+}

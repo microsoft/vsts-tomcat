@@ -68,7 +68,7 @@
             "required": true,
 			"options": {
 			     "6.x": "6.x",
-				 "7OrAbove" : "7 or above"
+                 "7OrAbove" : "7 or above"
 			},
             "helpMarkDown": "Specify tomcat server version."
         }
