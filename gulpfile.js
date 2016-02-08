@@ -8,21 +8,21 @@ var shell = require("shelljs");
 var tsb = require("gulp-tsb");
 var tslint = require("gulp-tslint");
 
-const buildDirectory = "_build";
-const srcBuildDirectory = "_build/src";
-const codeCoverageDirectory = buildDirectory + "/codeCoverage";
-const packageDirectory = buildDirectory + "/package";
-const sourcePaths = {
+var buildDirectory = "_build";
+var srcBuildDirectory = "_build/src";
+var codeCoverageDirectory = buildDirectory + "/codeCoverage";
+var packageDirectory = buildDirectory + "/package";
+var sourcePaths = {
     typescriptFiles: "src/**/*.ts",
     copyFiles: ["src/**/*.png", "src/**/*.json", "src/**/*.md", "src/tasks/**/invoke*.js"],
     tasksPath: "src/tasks"
 };
-const testPaths = {
+var testPaths = {
     typescriptFiles: "tests/**/*.ts",
     compiledTestFiles: buildDirectory + "/tests/**/*Tests.js"
 };
-const packageManifestFile = "vss-extension.json";
-const nodeModulesDirectory = "node_modules";
+var packageManifestFile = "vss-extension.json";
+var nodeModulesDirectory = "node_modules";
 
 var compilation = tsb.create({
     target: 'es5',
