@@ -1,20 +1,28 @@
 var del = require("del");
+var fs = require('fs');
 var gulp = require("gulp");
 var istanbul = require("gulp-istanbul");
 var mocha = require("gulp-mocha");
+var path = require("path");
+var shell = require("shelljs");
 var tsb = require("gulp-tsb");
 var tslint = require("gulp-tslint");
 
-var buildDirectory = "_build";
-var sourcePaths = {
+const buildDirectory = "_build";
+const srcBuildDirectory = "_build/src";
+const codeCoverageDirectory = buildDirectory + "/codeCoverage";
+const packageDirectory = buildDirectory + "/package";
+const sourcePaths = {
     typescriptFiles: "src/**/*.ts",
-    copyFiles: ["src/tasks/**/*.json", "src/tasks/**/*.md", "src/tasks/**/invoke*.js"]
+    copyFiles: ["src/**/*.png", "src/**/*.json", "src/**/*.md", "src/tasks/**/invoke*.js"],
+    tasksPath: "src/tasks"
 };
-var testPaths = {
+const testPaths = {
     typescriptFiles: "tests/**/*.ts",
     compiledTestFiles: buildDirectory + "/tests/**/*Tests.js"
 };
-var codeCoverageDir = buildDirectory + "/codeCoverage";
+const packageManifestFile = "vss-extension.json";
+const nodeModulesDirectory = "node_modules";
 
 var compilation = tsb.create({
     target: 'es5',
@@ -49,8 +57,53 @@ gulp.task("build", ["compile"], function() {
 gulp.task("test", ["build"], function() {
     return gulp.src(testPaths.compiledTestFiles, {read: false})
         .pipe(mocha())
-        .pipe(istanbul.writeReports({dir: codeCoverageDir}))
+        .pipe(istanbul.writeReports({dir: codeCoverageDirectory}))
         .pipe(istanbul.enforceThresholds({thresholds: {global: 100}}));
 });
 
 gulp.task("default", ["test"]);
+
+gulp.task("package", ["test"], function() {
+    getNodeDependencies(function() {
+        copyNodeModulesToTasks();
+        createVsixPackage();        
+    });
+});
+
+var getNodeDependencies = function(callback) {
+    del(packageDirectory);
+    shell.mkdir("-p", packageDirectory);
+    shell.cp("-f", "package.json", packageDirectory);
+    shell.pushd(packageDirectory);
+    
+    var npmPath = shell.which("npm");
+    var npmInstallCommand = '"' + npmPath + '" install --production';
+    executeCommand(npmInstallCommand, function() {
+        shell.popd();
+        callback();
+    });
+}
+
+var copyNodeModulesToTasks = function() {
+    fs.readdirSync(sourcePaths.tasksPath).forEach(function(taskName) {
+        var taskpath = path.join(buildDirectory, sourcePaths.tasksPath, taskName);
+        del(path.join(taskpath, nodeModulesDirectory));
+        shell.cp("-rf", path.join(packageDirectory, nodeModulesDirectory), taskpath);
+    });
+}
+
+var createVsixPackage = function() {
+    var packagingCmd = "tfx extension create --manifeset-globs " + packageManifestFile + " --root " + srcBuildDirectory + " --output-path " + packageDirectory;
+    executeCommand(packagingCmd, function() {});
+}
+
+var executeCommand = function(cmd, callback) {
+    shell.exec(cmd, {silent: true}, function(code, output) {
+       if(code != 0) {
+           console.error("command failed: " + cmd + "\nManually execute to debug");
+       }
+       else {
+           callback();
+       }
+    });
+}

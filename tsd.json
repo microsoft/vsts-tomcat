@@ -7,6 +7,12 @@
   "installed": {
     "mocha/mocha.d.ts": {
       "commit": "e69fe60f2d6377ea4fae539493997b098f52cad1"
+    },
+    "node/node.d.ts": {
+      "commit": "3030a4be536b6530c06b80081f1333dc0de4d703"
+    },
+    "shelljs/shelljs.d.ts": {
+      "commit": "3030a4be536b6530c06b80081f1333dc0de4d703"
     }
   }
 }
