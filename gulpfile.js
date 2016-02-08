@@ -72,7 +72,7 @@ gulp.task("package", ["test"], function() {
 
 var getNodeDependencies = function(callback) {
     del(packageDirectory);
-    shell.mkdir("-p", packageDirectory);
+    shell.mkdir("-p", path.join(packageDirectory, nodeModulesDirectory));
     shell.cp("-f", "package.json", packageDirectory);
     shell.pushd(packageDirectory);
     
