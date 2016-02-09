@@ -1,3 +1,3 @@
-export function Deploy(): void {
+export function deploy(): void {
 	
 }

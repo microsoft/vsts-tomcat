@@ -4,6 +4,6 @@ import * as tomcatDeployment from "../../../src/tasks/tomcatDeployment/tomcatDep
 
 describe("TomcatDeployment.Deploy", (): void => {
     it("should pass", (): void => {
-        tomcatDeployment.Deploy();
+        tomcatDeployment.deploy();
     });
 });
