@@ -21,4 +21,16 @@ export function deploy(): void {
 }
 
 export function deployWarFile(tomcatUrl: string, username: string, password: string, warfile: string, context: string, serverVersion: string): void {
+    tl.exec("curl", constructCurlCmdArgsString(username, password, warfile, tomcatUrl));
+}
+
+export function constructCurlCmdArgsString(username: string, password: string, warfile: string, url: string): string {
+    var args = "--stderr -";
+    args += " -i";
+    args += " --fail";
+    args += " -u " + username + ":\"" + password + "\"";
+    args += " -T \"" + warfile + "\"";
+    args += " " + url;
+    
+    return args;
 }

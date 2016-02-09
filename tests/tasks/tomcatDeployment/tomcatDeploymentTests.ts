@@ -3,6 +3,7 @@
 
 import * as tomcat from "../../../src/tasks/tomcatDeployment/tomcatDeployment";
 
+import assert = require("assert");
 import chai = require("chai");
 import sinon = require("sinon");
 import sinonChai = require("sinon-chai");
@@ -28,12 +29,12 @@ function redirectTaskLibOutputFromConsole(): void {
 
 describe("tomcat.deploy", (): void => {
     var sandbox;
-    var deployWarFileSpy;
+    var deployWarFileStub;
     var getInputStub;
     
     beforeEach((): void => {
         sandbox = sinon.sandbox.create();
-        deployWarFileSpy = sandbox.spy(tomcat, "deployWarFile");
+        deployWarFileStub = sandbox.stub(tomcat, "deployWarFile");
         getInputStub = sandbox.stub(tl, "getInput");
         redirectTaskLibOutputFromConsole();
     });
@@ -52,22 +53,33 @@ describe("tomcat.deploy", (): void => {
             
         tomcat.deploy();
         
-        deployWarFileSpy.withArgs(tomcatUrl, username, password, warfile, context, serverVersion).should.have.been.calledOnce;
+        deployWarFileStub.withArgs(tomcatUrl, username, password, warfile, context, serverVersion).should.have.been.calledOnce;
     });
 });
 
 describe("tomcat.deployWarFile", (): void => {
     var sandbox;
+    var execStub;
     
     beforeEach((): void => {
         sandbox = sinon.sandbox.create();
+        execStub = sandbox.stub(tl, "exec");
     });
     
     afterEach((): void => {
         sandbox.restore();
     });
     
-    it("should pass", (): void => {
+    it("should call curl with correct arguments", (): void => {
         tomcat.deployWarFile(tomcatUrl, username, password, warfile, context, serverVersion);
+        
+        execStub.withArgs("curl", tomcat.constructCurlCmdArgsString(username, password, warfile, tomcatUrl)).should.have.been.calledOnce;
+    });
+});
+
+describe("tomcat.constructCurlCmdArgsString", (): void => {
+    it("should properly construct the curl cmd arg", (): void => {
+        var arg = tomcat.constructCurlCmdArgsString(username, password, warfile, tomcatUrl);
+        assert.strictEqual(arg, "--stderr - -i --fail -u " + username + ":\"" + password + "\" -T \"" + warfile + "\" " + tomcatUrl);    
     });
 });
