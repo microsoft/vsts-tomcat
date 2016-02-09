@@ -79,7 +79,9 @@ describe("tomcat.deployWarFile", (): void => {
 
 describe("tomcat.constructCurlCmdArgsString", (): void => {
     it("should properly construct the curl cmd arg", (): void => {
-        var arg = tomcat.constructCurlCmdArgsString(username, password, warfile, tomcatUrl);
-        assert.strictEqual(arg, "--stderr - -i --fail -u " + username + ":\"" + password + "\" -T \"" + warfile + "\" " + tomcatUrl);    
+        var arg = tomcat.constructCurlCmdArgsString("username", "password", "warfile", "http://url/warfile");
+        /* tslint:disable:quotemark */
+        assert.strictEqual(arg, '--stderr - -i --fail -u username:"password" -T "warfile" http://url/warfile');
+        /* tslint:enable:quotemark */    
     });
 });
