@@ -60,10 +60,13 @@ describe("tomcat.deploy", (): void => {
 describe("tomcat.deployWarFile", (): void => {
     var sandbox;
     var execStub;
+    var whichStub;
     
     beforeEach((): void => {
         sandbox = sinon.sandbox.create();
         execStub = sandbox.stub(tl, "exec");
+        whichStub = sandbox.stub(tl, "which");
+        whichStub.returns("dummy");
     });
     
     afterEach((): void => {
