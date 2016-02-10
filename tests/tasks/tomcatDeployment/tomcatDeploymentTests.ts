@@ -20,14 +20,8 @@ var warfile = "\\users\\dummyusername\\dummywarfile.war";
 var context = "/dummycontext";
 var serverVersion = "6.x";
 
-function redirectTaskLibOutputFromConsole(): void {
-    var stdoutmock = {
-        write: function(message: string) {}
-    };
-    tl.setStdStream(stdoutmock);
-    tl.setErrStream(stdoutmock);
-}
-
+// block Process Exit by task-lib in case of negative test cases
+var processExitStub = sinon.stub(process, "exit");
 redirectTaskLibOutputFromConsole();
 
 describe("tomcat.deploy", (): void => {
@@ -120,11 +114,9 @@ describe("tomcat.getCurlCmdForDeployingWar", (): void => {
 
 describe("tomcat.getCurlPath", (): void => {
     var sandbox;
-    var exitStub;
     
     beforeEach((): void => {
         sandbox = sinon.sandbox.create(); 
-        exitStub = sandbox.stub(process, "exit");
     });
     
     afterEach((): void => {
@@ -149,7 +141,7 @@ describe("tomcat.getCurlPath", (): void => {
         
         tomcat.getCurlPath();
         
-        exitStub.should.have.been.calledOnce;
+        processExitStub.should.have.been.calledOnce;
     });
 });
 
@@ -163,7 +155,7 @@ describe("tomcat.getTargetUrlForDeployingWar", (): void => {
     beforeEach((): void => {
         sandbox = sinon.sandbox.create();
         errorStub = sandbox.stub(tl, "error"); 
-        exitStub = sandbox.stub(process, "exit");
+        exitStub = sandbox.stub(tl, "exit");
     });
     
     afterEach((): void => {
@@ -281,3 +273,11 @@ describe("tomcat.execCurlCmdForDeployingWar", (): void => {
         exitStub.withArgs(mockResult.code).should.have.been.calledOnce;
     });
 });
+
+function redirectTaskLibOutputFromConsole(): void {
+    var stdoutmock = {
+        write: function(message: string) {}
+    };
+    tl.setStdStream(stdoutmock);
+    tl.setErrStream(stdoutmock);
+}
