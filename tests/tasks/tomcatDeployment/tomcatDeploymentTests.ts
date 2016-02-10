@@ -104,12 +104,10 @@ describe("tomcat.constructCurlCmdArgsString", (): void => {
 
 describe("tomcat.getCurlPath", (): void => {
     var sandbox;
-    var whichStub;
     var exitStub;
     
     beforeEach((): void => {
-        sandbox = sinon.sandbox.create();
-        whichStub = sandbox.stub(tl, "which"); 
+        sandbox = sinon.sandbox.create(); 
         exitStub = sandbox.stub(process, "exit");
     });
     
@@ -119,6 +117,7 @@ describe("tomcat.getCurlPath", (): void => {
     
     it("should return curl path if exists", (): void => {
         var mockPath = "c:\\program files\\cURL\\bin\\curl.exe";
+        var whichStub = sandbox.stub(tl, "which");        
         whichStub.returns(mockPath);
         
         var curlPath = tomcat.getCurlPath();
@@ -126,9 +125,11 @@ describe("tomcat.getCurlPath", (): void => {
         assert.strictEqual(curlPath, mockPath);
     });
     
-    it("should halt execution if curl doesnot exit", (): void => {
-        whichStub.restore();
-        whichStub.withArgs("curl", true).returns(tl.which("NoToolShouldExistWithThisName.SoActualBehaviorOf-tl.which", true));
+    it("should halt execution if curl doesnot exist", (): void => {
+        var whichStub = sandbox.stub(tl, "which", (tool: string, check?: boolean): string => {
+            whichStub.restore();
+            return tl.which("NoToolShouldExistWithThisName.SoActualBehaviorOf-tl.which-likeCurlDoesnotExixst", true);
+        });
         
         tomcat.getCurlPath();
         
