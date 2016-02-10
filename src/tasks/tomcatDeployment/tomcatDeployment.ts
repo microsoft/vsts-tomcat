@@ -1,5 +1,6 @@
 /// <reference path="../../../typings/vsts-task-lib/vsts-task-lib.d.ts" />
 
+import path = require("path");
 import tl = require("vsts-task-lib/task");
 
 export function deploy(): void {
@@ -28,6 +29,17 @@ export function deployWarFile(tomcatUrl: string, username: string, password: str
     serverVersion = serverVersion.trim();
     
     tl.exec(getCurlPath(), getCurlCmdForDeployingWar(username, password, warfile, tomcatUrl));
+}
+
+export function getTargetUrlForDeployingWar(tomcatUrl: string, warfile: string, context: string, serverVersion: string): string {
+    var warfileBaseName = path.basename(warfile, ".war");
+    
+    if (serverVersion == "6.x") {
+        return tomcatUrl + "/manager/deploy?path=" + context + warfileBaseName + "&update=true";
+    }
+    else {
+        return tomcatUrl + "/manager/text/deploy?path=" + context + warfileBaseName + "&update=true";        
+    }
 }
 
 export function getCurlPath(): string {

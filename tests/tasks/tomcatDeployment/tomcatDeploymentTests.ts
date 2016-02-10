@@ -136,3 +136,34 @@ describe("tomcat.getCurlPath", (): void => {
         exitStub.should.have.been.calledOnce;
     });
 });
+
+describe("tomcat.getTargetUrlForDeployingWar", (): void => {
+    var version6 = "6.x";
+    var version7 = "7OrAbove";
+    
+    it("should construct url for 6.x versions", (): void => {
+        var targetUrl = tomcat.getTargetUrlForDeployingWar("http://localhost:8080", "java_demo.war", "/", version6);
+        assert.strictEqual(targetUrl, "http://localhost:8080/manager/deploy?path=/java_demo&update=true");
+    });
+    
+    it("should construct url for 7.0 and above versions", (): void => {
+        var targetUrl = tomcat.getTargetUrlForDeployingWar("http://localhost:8080", "c:\\java_demo.war", "/", version7);
+        assert.strictEqual(targetUrl, "http://localhost:8080/manager/text/deploy?path=/java_demo&update=true");
+    });
+    
+    it("should work with windows path", (): void => {
+        var warfileValues: string[] = ["c:\\windows\\java_demo.war", "c:\\\\windows\\\\java_demo.war", "c:\\\\windows\\\\java_demo"];
+        warfileValues.forEach(function(warfile: string) {
+            var targetUrl = tomcat.getTargetUrlForDeployingWar("http://localhost:8080", warfile, "/", version6);
+            assert.strictEqual(targetUrl, "http://localhost:8080/manager/deploy?path=/java_demo&update=true");
+        });
+    });
+        
+    it("should work with linux path", (): void => {
+        var warfileValues: string[] = ["/usr/bin/java_demo.war", "/usr/bin/java_demo"];
+        warfileValues.forEach(function(warfile: string) {
+            var targetUrl = tomcat.getTargetUrlForDeployingWar("http://localhost:8080", warfile, "/", version6);
+            assert.strictEqual(targetUrl, "http://localhost:8080/manager/deploy?path=/java_demo&update=true");
+        });
+    });
+});
