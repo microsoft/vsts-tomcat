@@ -39,6 +39,8 @@ export function getTargetUrlForDeployingWar(tomcatUrl: string, warfile: string, 
     
     var warfileBaseName = path.basename(warfile, ".war");
     var context = (context == "/") ? context + warfileBaseName : context;
+    // encode all characters like space and '&'. Exclude '/' for readability
+    context = encodeURIComponent(context).replace(/%2F/g, "/");
     
     if (serverVersion == "6.x") {
         return tomcatUrl + "/manager/deploy?path=" + context + "&update=true";

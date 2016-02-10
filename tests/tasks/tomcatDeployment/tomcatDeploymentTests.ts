@@ -190,4 +190,14 @@ describe("tomcat.getTargetUrlForDeployingWar", (): void => {
         errorStub.withArgs("Invalid context. Context should start with '/'").should.have.been.calledOnce;
         exitStub.should.have.been.calledOnce;
     });
+    
+    it("should URL encode context", (): void => {
+        var targetUrl = tomcat.getTargetUrlForDeployingWar("http://localhost:8080", "usr/bin/java_demo.war", "/Context/Value With-Space&SpecialChar", version7);
+        assert.strictEqual(targetUrl, "http://localhost:8080/manager/text/deploy?path=/Context/Value%20With-Space%26SpecialChar&update=true");
+    });
+    
+    it("should URL encode warfile", (): void => {
+        var targetUrl = tomcat.getTargetUrlForDeployingWar("http://localhost:8080", "usr/bin/java_demo with-space&specialChar%.war", "/", version7);
+        assert.strictEqual(targetUrl, "http://localhost:8080/manager/text/deploy?path=/java_demo%20with-space%26specialChar%25&update=true");
+    });
 });
