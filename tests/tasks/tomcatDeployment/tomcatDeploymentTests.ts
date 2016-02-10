@@ -140,6 +140,19 @@ describe("tomcat.getCurlPath", (): void => {
 describe("tomcat.getTargetUrlForDeployingWar", (): void => {
     var version6 = "6.x";
     var version7 = "7OrAbove";
+    var sandbox;
+    var errorStub;
+    var exitStub;
+    
+    beforeEach((): void => {
+        sandbox = sinon.sandbox.create();
+        errorStub = sandbox.stub(tl, "error"); 
+        exitStub = sandbox.stub(process, "exit");
+    });
+    
+    afterEach((): void => {
+        sandbox.restore();
+    });
     
     it("should construct url for 6.x versions", (): void => {
         var targetUrl = tomcat.getTargetUrlForDeployingWar("http://localhost:8080", "java_demo.war", "/", version6);
@@ -165,5 +178,16 @@ describe("tomcat.getTargetUrlForDeployingWar", (): void => {
             var targetUrl = tomcat.getTargetUrlForDeployingWar("http://localhost:8080", warfile, "/", version6);
             assert.strictEqual(targetUrl, "http://localhost:8080/manager/deploy?path=/java_demo&update=true");
         });
+    });
+    
+    it("should use context instead of warfile when context is provided", (): void => {
+        var targetUrl = tomcat.getTargetUrlForDeployingWar("http://localhost:8080", "usr/bin/java_demo.war", "/Demo", version7);
+        assert.strictEqual(targetUrl, "http://localhost:8080/manager/text/deploy?path=/Demo&update=true");
+    });
+    
+    it("should write error and halt execution when context doesn't start with '/'", (): void => {
+        tomcat.getTargetUrlForDeployingWar("http://localhost:8080", "/usr/bin/java_demo.war", "context", version6);
+        errorStub.withArgs("Invalid context. Context should start with '/'").should.have.been.calledOnce;
+        exitStub.should.have.been.calledOnce;
     });
 });

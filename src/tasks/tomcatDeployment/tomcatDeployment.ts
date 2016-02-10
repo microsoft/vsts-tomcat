@@ -32,13 +32,19 @@ export function deployWarFile(tomcatUrl: string, username: string, password: str
 }
 
 export function getTargetUrlForDeployingWar(tomcatUrl: string, warfile: string, context: string, serverVersion: string): string {
+    if (context.charAt(0) != "/") {
+        tl.error("Invalid context. Context should start with '/'");
+        tl.exit(1);
+    }
+    
     var warfileBaseName = path.basename(warfile, ".war");
+    var context = (context == "/") ? context + warfileBaseName : context;
     
     if (serverVersion == "6.x") {
-        return tomcatUrl + "/manager/deploy?path=" + context + warfileBaseName + "&update=true";
+        return tomcatUrl + "/manager/deploy?path=" + context + "&update=true";
     }
     else {
-        return tomcatUrl + "/manager/text/deploy?path=" + context + warfileBaseName + "&update=true";        
+        return tomcatUrl + "/manager/text/deploy?path=" + context + "&update=true";        
     }
 }
 
