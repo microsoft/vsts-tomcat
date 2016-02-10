@@ -154,12 +154,12 @@ describe("tomcat.getTargetUrlForDeployingWar", (): void => {
         sandbox.restore();
     });
     
-    it("should construct url for 6.x versions", (): void => {
+    it("should construct url for tomcat 6.x versions", (): void => {
         var targetUrl = tomcat.getTargetUrlForDeployingWar("http://localhost:8080", "java_demo.war", "/", version6);
         assert.strictEqual(targetUrl, "http://localhost:8080/manager/deploy?path=/java_demo&update=true");
     });
     
-    it("should construct url for 7.0 and above versions", (): void => {
+    it("should construct url for tomcat 7.0 and above versions", (): void => {
         var targetUrl = tomcat.getTargetUrlForDeployingWar("http://localhost:8080", "c:\\java_demo.war", "/", version7);
         assert.strictEqual(targetUrl, "http://localhost:8080/manager/text/deploy?path=/java_demo&update=true");
     });
@@ -185,7 +185,7 @@ describe("tomcat.getTargetUrlForDeployingWar", (): void => {
         assert.strictEqual(targetUrl, "http://localhost:8080/manager/text/deploy?path=/Demo&update=true");
     });
     
-    it("should write error and halt execution when context doesn't start with '/'", (): void => {
+    it("should write error and halt execution when context does not start with '/'", (): void => {
         tomcat.getTargetUrlForDeployingWar("http://localhost:8080", "/usr/bin/java_demo.war", "context", version6);
         errorStub.withArgs("Invalid context. Context should start with '/'").should.have.been.calledOnce;
         exitStub.should.have.been.calledOnce;
