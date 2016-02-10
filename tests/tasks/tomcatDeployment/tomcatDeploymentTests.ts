@@ -76,25 +76,25 @@ describe("tomcat.deployWarFile", (): void => {
     it("should call curl with correct arguments", (): void => {
         tomcat.deployWarFile(tomcatUrl, username, password, warfile, context, serverVersion);
         
-        execStub.withArgs(tomcat.getCurlPath(), tomcat.constructCurlCmdArgsString(username, password, warfile, tomcatUrl)).should.have.been.calledOnce;
+        execStub.withArgs(tomcat.getCurlPath(), tomcat.getCurlCmdForDeployingWar(username, password, warfile, tomcatUrl)).should.have.been.calledOnce;
     });
     
     it("should trim inputs before passing to curl", (): void => {
         tomcat.deployWarFile(" " + tomcatUrl + " ", " " + username + " ", password, " " + warfile + " ", " " + context + " ", " " + serverVersion + " ");
         
-        execStub.withArgs(tomcat.getCurlPath(), tomcat.constructCurlCmdArgsString(username, password, warfile, tomcatUrl)).should.have.been.calledOnce;
+        execStub.withArgs(tomcat.getCurlPath(), tomcat.getCurlCmdForDeployingWar(username, password, warfile, tomcatUrl)).should.have.been.calledOnce;
     });
     
     it("should not trim password", (): void => {
         tomcat.deployWarFile(tomcatUrl, username, " " + password + " ", warfile, context, serverVersion);
         
-        execStub.withArgs(tomcat.getCurlPath(), tomcat.constructCurlCmdArgsString(username, " " + password + " ", warfile, tomcatUrl)).should.have.been.calledOnce;
+        execStub.withArgs(tomcat.getCurlPath(), tomcat.getCurlCmdForDeployingWar(username, " " + password + " ", warfile, tomcatUrl)).should.have.been.calledOnce;
     });
 });
 
-describe("tomcat.constructCurlCmdArgsString", (): void => {
+describe("tomcat.getCurlCmdForDeployingWar", (): void => {
     it("should properly construct the curl cmd arg", (): void => {
-        var arg = tomcat.constructCurlCmdArgsString("username", "password", "warfile", "http://url/warfile");
+        var arg = tomcat.getCurlCmdForDeployingWar("username", "password", "warfile", "http://url/warfile");
         
         /* tslint:disable:quotemark */
         assert.strictEqual(arg, '--stderr - -i --fail -u username:"password" -T "warfile" http://url/warfile');

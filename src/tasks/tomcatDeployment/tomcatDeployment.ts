@@ -27,7 +27,7 @@ export function deployWarFile(tomcatUrl: string, username: string, password: str
     context = context.trim();
     serverVersion = serverVersion.trim();
     
-    tl.exec(getCurlPath(), constructCurlCmdArgsString(username, password, warfile, tomcatUrl));
+    tl.exec(getCurlPath(), getCurlCmdForDeployingWar(username, password, warfile, tomcatUrl));
 }
 
 export function getCurlPath(): string {
@@ -35,7 +35,7 @@ export function getCurlPath(): string {
     return curlPath;
 }
 
-export function constructCurlCmdArgsString(username: string, password: string, warfile: string, url: string): string {
+export function getCurlCmdForDeployingWar(username: string, password: string, warfile: string, url: string): string {
     var args = "--stderr -";
     args += " -i";
     args += " --fail";
