@@ -8,6 +8,7 @@ import chai = require("chai");
 import sinon = require("sinon");
 import sinonChai = require("sinon-chai");
 import tl = require("vsts-task-lib/task");
+import tr = require("vsts-task-lib/toolrunner");
 
 chai.should();
 chai.use(sinonChai);
@@ -27,6 +28,8 @@ function redirectTaskLibOutputFromConsole(): void {
     tl.setErrStream(stdoutmock);
 }
 
+redirectTaskLibOutputFromConsole();
+
 describe("tomcat.deploy", (): void => {
     var sandbox;
     var deployWarFileStub;
@@ -36,7 +39,6 @@ describe("tomcat.deploy", (): void => {
         sandbox = sinon.sandbox.create();
         deployWarFileStub = sandbox.stub(tomcat, "deployWarFile");
         getInputStub = sandbox.stub(tl, "getInput");
-        redirectTaskLibOutputFromConsole();
     });
     
     afterEach((): void => {
@@ -60,13 +62,10 @@ describe("tomcat.deploy", (): void => {
 describe("tomcat.deployWarFile", (): void => {
     var sandbox;
     var execStub;
-    var whichStub;
     
     beforeEach((): void => {
         sandbox = sinon.sandbox.create();
-        execStub = sandbox.stub(tl, "exec");
-        whichStub = sandbox.stub(tl, "which");
-        whichStub.returns("dummy");
+        execStub = sandbox.stub(tomcat, "execCurlCmdForDeployingWar");
     });
     
     afterEach((): void => {
@@ -76,19 +75,19 @@ describe("tomcat.deployWarFile", (): void => {
     it("should call curl with correct arguments", (): void => {
         tomcat.deployWarFile(tomcatUrl, username, password, warfile, context, serverVersion);
         
-        execStub.withArgs(tomcat.getCurlPath(), tomcat.getCurlCmdForDeployingWar(username, password, warfile, tomcatUrl)).should.have.been.calledOnce;
+        execStub.withArgs(tomcat.getCurlCmdForDeployingWar(username, password, warfile, tomcatUrl)).should.have.been.calledOnce;
     });
     
     it("should trim inputs before passing to curl", (): void => {
         tomcat.deployWarFile(" " + tomcatUrl + " ", " " + username + " ", password, " " + warfile + " ", " " + context + " ", " " + serverVersion + " ");
         
-        execStub.withArgs(tomcat.getCurlPath(), tomcat.getCurlCmdForDeployingWar(username, password, warfile, tomcatUrl)).should.have.been.calledOnce;
+        execStub.withArgs(tomcat.getCurlCmdForDeployingWar(username, password, warfile, tomcatUrl)).should.have.been.calledOnce;
     });
     
     it("should not trim password", (): void => {
         tomcat.deployWarFile(tomcatUrl, username, " " + password + " ", warfile, context, serverVersion);
         
-        execStub.withArgs(tomcat.getCurlPath(), tomcat.getCurlCmdForDeployingWar(username, " " + password + " ", warfile, tomcatUrl)).should.have.been.calledOnce;
+        execStub.withArgs(tomcat.getCurlCmdForDeployingWar(username, " " + password + " ", warfile, tomcatUrl)).should.have.been.calledOnce;
     });
 });
 
@@ -224,5 +223,61 @@ describe("tomcat.getTargetUrlForDeployingWar", (): void => {
         var targetUrl = tomcat.getTargetUrlForDeployingWar("http://localhost:8080", "usr/bin/java_demo with-space&specialChar%.war", "/", version7);
         
         assert.strictEqual(targetUrl, "http://localhost:8080/manager/text/deploy?path=/java_demo%20with-space%26specialChar%25&update=true");
+    });
+});
+
+describe("tomcat.execCurlCmdForDeployingWar", (): void => {
+    var sandbox;
+    var execSyncStub;
+    var errorStub;
+    var exitStub;
+    var execOptions = <tr.IExecOptions> { failOnStdErr: true };
+    
+    beforeEach((): void => {
+        sandbox = sinon.sandbox.create();
+        execSyncStub = sandbox.stub(tl, "execSync");
+        errorStub = sandbox.stub(tl, "error");
+        exitStub = sandbox.stub(tl, "exit");
+        
+        execSyncStub.returns(<tr.IExecResult> { code: 0 });
+    });
+    
+    afterEach((): void => {
+        sandbox.restore();
+    });
+    
+    it("should pass correct parameters to tl.execSync", (): void => {
+        tomcat.execCurlCmdForDeployingWar("dummyCmdArg");
+        
+        execSyncStub.withArgs(tomcat.getCurlPath(), "dummyCmdArg", execOptions).should.have.been.calledOnce;
+    });
+    
+    it("should succeed if tl.execSync succeeds", (): void => {
+        var mockResult = <tr.IExecResult> { code: 0 };   
+        execSyncStub.withArgs(tomcat.getCurlPath(), "dummyCmdArg", execOptions).returns(mockResult);
+         
+        tomcat.execCurlCmdForDeployingWar("dummyCmdArg");
+    });
+    
+    it("should fail if tl.execSync fails", (): void => {
+        var mockResult = <tr.IExecResult> { 
+            code: 1,
+            error: new Error("Just failed") 
+        };   
+        execSyncStub.withArgs(tomcat.getCurlPath(), "dummyCmdArg", execOptions).returns(mockResult);
+         
+        tomcat.execCurlCmdForDeployingWar("dummyCmdArg");
+        
+        errorStub.withArgs(mockResult.error.message).should.have.been.calledOnce;
+        exitStub.withArgs(mockResult.code).should.have.been.calledOnce;
+    });
+    
+    it("should fail with no error message if tl.execSync fails with no error message", (): void => {
+        var mockResult = <tr.IExecResult> { code: 1 };   
+        execSyncStub.withArgs(tomcat.getCurlPath(), "dummyCmdArg", execOptions).returns(mockResult);
+         
+        tomcat.execCurlCmdForDeployingWar("dummyCmdArg");
+        
+        exitStub.withArgs(mockResult.code).should.have.been.calledOnce;
     });
 });

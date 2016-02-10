@@ -2,6 +2,7 @@
 
 import path = require("path");
 import tl = require("vsts-task-lib/task");
+import tr = require("vsts-task-lib/toolrunner");
 
 export function deploy(): void {
     var tomcatUrl = tl.getInput("tomcatUrl", true);
@@ -28,7 +29,7 @@ export function deployWarFile(tomcatUrl: string, username: string, password: str
     context = context.trim();
     serverVersion = serverVersion.trim();
     
-    tl.exec(getCurlPath(), getCurlCmdForDeployingWar(username, password, warfile, tomcatUrl));
+    this.execCurlCmdForDeployingWar(getCurlCmdForDeployingWar(username, password, warfile, tomcatUrl));
 }
 
 export function getTargetUrlForDeployingWar(tomcatUrl: string, warfile: string, context: string, serverVersion: string): string {
@@ -68,4 +69,15 @@ export function getCurlCmdForDeployingWar(username: string, password: string, wa
     }
     
     return args;
+}
+
+export function execCurlCmdForDeployingWar(cmdArg: string): void {
+    var result = tl.execSync(getCurlPath(), cmdArg, <tr.IExecOptions> { failOnStdErr: true });
+    
+    if (result.code != 0) {
+        if (result.error) {
+            tl.error(result.error.message); 
+        }
+        tl.exit(result.code);
+    }
 }
