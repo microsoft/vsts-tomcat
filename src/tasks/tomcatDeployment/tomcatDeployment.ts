@@ -62,6 +62,10 @@ export function getCurlCmdForDeployingWar(username: string, password: string, wa
     args += " -u " + username + ":\"" + password + "\"";
     args += " -T \"" + warfile + "\"";
     args += " " + url;
+ 
+    if (process.env["system_debug"] == "true") {
+        args += " -v";
+    }
     
     return args;
 }

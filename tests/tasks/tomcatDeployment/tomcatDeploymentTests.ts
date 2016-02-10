@@ -93,13 +93,30 @@ describe("tomcat.deployWarFile", (): void => {
 });
 
 describe("tomcat.getCurlCmdForDeployingWar", (): void => {
+    beforeEach((): void => {
+        process.env["system_debug"] = false;
+    });
+    
+    afterEach((): void => {
+        process.env["system_debug"] = false;
+    });
+    
+    /* tslint:disable:quotemark */
     it("should properly construct the curl cmd arg", (): void => {
         var arg = tomcat.getCurlCmdForDeployingWar("username", "password", "warfile", "http://url/warfile");
         
-        /* tslint:disable:quotemark */
         assert.strictEqual(arg, '--stderr - -i --fail -u username:"password" -T "warfile" http://url/warfile');
-        /* tslint:enable:quotemark */    
+            
     });
+    
+    it("should append -v to the cmd arg if system_debug is set to true", (): void => {
+        process.env["system_debug"] = true;
+        
+        var arg = tomcat.getCurlCmdForDeployingWar("username", "password", "warfile", "http://url/warfile");
+        
+        assert.strictEqual(arg, '--stderr - -i --fail -u username:"password" -T "warfile" http://url/warfile -v');
+    });
+    /* tslint:enable:quotemark */
 });
 
 describe("tomcat.getCurlPath", (): void => {
@@ -156,11 +173,13 @@ describe("tomcat.getTargetUrlForDeployingWar", (): void => {
     
     it("should construct url for tomcat 6.x versions", (): void => {
         var targetUrl = tomcat.getTargetUrlForDeployingWar("http://localhost:8080", "java_demo.war", "/", version6);
+        
         assert.strictEqual(targetUrl, "http://localhost:8080/manager/deploy?path=/java_demo&update=true");
     });
     
     it("should construct url for tomcat 7.0 and above versions", (): void => {
         var targetUrl = tomcat.getTargetUrlForDeployingWar("http://localhost:8080", "c:\\java_demo.war", "/", version7);
+        
         assert.strictEqual(targetUrl, "http://localhost:8080/manager/text/deploy?path=/java_demo&update=true");
     });
     
@@ -168,6 +187,7 @@ describe("tomcat.getTargetUrlForDeployingWar", (): void => {
         var warfileValues: string[] = ["c:\\windows\\java_demo.war", "c:\\\\windows\\\\java_demo.war", "c:\\\\windows\\\\java_demo"];
         warfileValues.forEach(function(warfile: string) {
             var targetUrl = tomcat.getTargetUrlForDeployingWar("http://localhost:8080", warfile, "/", version6);
+        
             assert.strictEqual(targetUrl, "http://localhost:8080/manager/deploy?path=/java_demo&update=true");
         });
     });
@@ -176,28 +196,33 @@ describe("tomcat.getTargetUrlForDeployingWar", (): void => {
         var warfileValues: string[] = ["/usr/bin/java_demo.war", "/usr/bin/java_demo"];
         warfileValues.forEach(function(warfile: string) {
             var targetUrl = tomcat.getTargetUrlForDeployingWar("http://localhost:8080", warfile, "/", version6);
+            
             assert.strictEqual(targetUrl, "http://localhost:8080/manager/deploy?path=/java_demo&update=true");
         });
     });
     
     it("should use context instead of warfile when context is provided", (): void => {
         var targetUrl = tomcat.getTargetUrlForDeployingWar("http://localhost:8080", "usr/bin/java_demo.war", "/Demo", version7);
+        
         assert.strictEqual(targetUrl, "http://localhost:8080/manager/text/deploy?path=/Demo&update=true");
     });
     
     it("should write error and halt execution when context does not start with '/'", (): void => {
         tomcat.getTargetUrlForDeployingWar("http://localhost:8080", "/usr/bin/java_demo.war", "context", version6);
+        
         errorStub.withArgs("Invalid context. Context should start with '/'").should.have.been.calledOnce;
         exitStub.should.have.been.calledOnce;
     });
     
     it("should URL encode context", (): void => {
         var targetUrl = tomcat.getTargetUrlForDeployingWar("http://localhost:8080", "usr/bin/java_demo.war", "/Context/Value With-Space&SpecialChar", version7);
+        
         assert.strictEqual(targetUrl, "http://localhost:8080/manager/text/deploy?path=/Context/Value%20With-Space%26SpecialChar&update=true");
     });
     
     it("should URL encode warfile", (): void => {
         var targetUrl = tomcat.getTargetUrlForDeployingWar("http://localhost:8080", "usr/bin/java_demo with-space&specialChar%.war", "/", version7);
+        
         assert.strictEqual(targetUrl, "http://localhost:8080/manager/text/deploy?path=/java_demo%20with-space%26specialChar%25&update=true");
     });
 });
