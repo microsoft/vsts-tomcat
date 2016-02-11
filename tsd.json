@@ -13,6 +13,21 @@
     },
     "shelljs/shelljs.d.ts": {
       "commit": "3030a4be536b6530c06b80081f1333dc0de4d703"
+    },
+    "sinon/sinon.d.ts": {
+      "commit": "72f0056f69f9a2290d2589c1a692896d24406928"
+    },
+    "assertion-error/assertion-error.d.ts": {
+      "commit": "72f0056f69f9a2290d2589c1a692896d24406928"
+    },
+    "chai/chai.d.ts": {
+      "commit": "72f0056f69f9a2290d2589c1a692896d24406928"
+    },
+    "sinon-chai/sinon-chai.d.ts": {
+      "commit": "72f0056f69f9a2290d2589c1a692896d24406928"
+    },
+    "q/Q.d.ts": {
+      "commit": "1a5b2a729d35b1d41e2d15818db013a3644c6ba4"
     }
   }
 }
