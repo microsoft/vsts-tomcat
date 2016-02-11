@@ -57,10 +57,14 @@ describe("tomcat.deploy", (): void => {
 describe("tomcat.deployWarFile", (): void => {
     var sandbox;
     var execStub;
-    
+    var getUrlStub;
+
     beforeEach((): void => {
         sandbox = sinon.sandbox.create();
         execStub = sandbox.stub(tomcat, "execCurlCmdForDeployingWar");
+        getUrlStub = sandbox.stub(tomcat, "getTargetUrlForDeployingWar");
+        
+        getUrlStub.withArgs(tomcatUrl, warfile, context, serverVersion).returns("dummyUrl");       
     });
     
     afterEach((): void => {
@@ -70,19 +74,22 @@ describe("tomcat.deployWarFile", (): void => {
     it("should call curl with correct arguments", (): void => {
         tomcat.deployWarFile(tomcatUrl, username, password, warfile, context, serverVersion);
         
-        execStub.withArgs(tomcat.getCurlCmdForDeployingWar(username, password, warfile, tomcatUrl)).should.have.been.calledOnce;
+        getUrlStub.withArgs(tomcatUrl, warfile, context, serverVersion).should.have.been.calledOnce;
+        execStub.withArgs(tomcat.getCurlCmdForDeployingWar(username, password, warfile, "dummyUrl")).should.have.been.calledOnce;
     });
     
     it("should trim inputs before passing to curl", (): void => {
         tomcat.deployWarFile(" " + tomcatUrl + " ", " " + username + " ", password, " " + warfile + " ", " " + context + " ", " " + serverVersion + " ");
         
-        execStub.withArgs(tomcat.getCurlCmdForDeployingWar(username, password, warfile, tomcatUrl)).should.have.been.calledOnce;
+        getUrlStub.withArgs(tomcatUrl, warfile, context, serverVersion).should.have.been.calledOnce;
+        execStub.withArgs(tomcat.getCurlCmdForDeployingWar(username, password, warfile, "dummyUrl")).should.have.been.calledOnce;        
     });
     
     it("should not trim password", (): void => {
         tomcat.deployWarFile(tomcatUrl, username, " " + password + " ", warfile, context, serverVersion);
         
-        execStub.withArgs(tomcat.getCurlCmdForDeployingWar(username, " " + password + " ", warfile, tomcatUrl)).should.have.been.calledOnce;
+        getUrlStub.withArgs(tomcatUrl, warfile, context, serverVersion).should.have.been.calledOnce;
+        execStub.withArgs(tomcat.getCurlCmdForDeployingWar(username, " " + password + " ", warfile, "dummyUrl")).should.have.been.calledOnce;
     });
 });
 

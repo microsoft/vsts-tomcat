@@ -29,7 +29,8 @@ export function deployWarFile(tomcatUrl: string, username: string, password: str
     context = context.trim();
     serverVersion = serverVersion.trim();
     
-    this.execCurlCmdForDeployingWar(getCurlCmdForDeployingWar(username, password, warfile, tomcatUrl));
+    var targetUrl = this.getTargetUrlForDeployingWar(tomcatUrl, warfile, context, serverVersion);
+    this.execCurlCmdForDeployingWar(this.getCurlCmdForDeployingWar(username, password, warfile, targetUrl));
 }
 
 export function getTargetUrlForDeployingWar(tomcatUrl: string, warfile: string, context: string, serverVersion: string): string {
@@ -49,11 +50,6 @@ export function getTargetUrlForDeployingWar(tomcatUrl: string, warfile: string, 
     else {
         return tomcatUrl + "/manager/text/deploy?path=" + context + "&update=true";        
     }
-}
-
-export function getCurlPath(): string {
-    var curlPath = tl.which("curl", true);
-    return curlPath;
 }
 
 export function getCurlCmdForDeployingWar(username: string, password: string, warfile: string, url: string): string {
@@ -81,4 +77,9 @@ export function execCurlCmdForDeployingWar(cmdArg: string): any {
         tl.error(reason);
         tl.exit(1);
     });
+}
+
+export function getCurlPath(): string {
+    var curlPath = tl.which("curl", true);
+    return curlPath;
 }
