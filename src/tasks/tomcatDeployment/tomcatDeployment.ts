@@ -71,13 +71,14 @@ export function getCurlCmdForDeployingWar(username: string, password: string, wa
     return args;
 }
 
-export function execCurlCmdForDeployingWar(cmdArg: string): void {
-    var result = tl.execSync(getCurlPath(), cmdArg, <tr.IExecOptions> { failOnStdErr: true });
-    
-    if (result.code != 0) {
-        if (result.error) {
-            tl.error(result.error.message); 
-        }
-        tl.exit(result.code);
-    }
+export function execCurlCmdForDeployingWar(cmdArg: string): any {
+    return tl.exec(this.getCurlPath(), cmdArg, <tr.IExecOptions> { failOnStdErr: true })
+    .then((code) => {
+        tl.debug("Exit code: " + code);
+        tl.exit(code);
+    }).
+    fail((reason) => {
+        tl.error(reason);
+        tl.exit(1);
+    });
 }

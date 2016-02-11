@@ -5,6 +5,7 @@ import * as tomcat from "../../../src/tasks/tomcatDeployment/tomcatDeployment";
 
 import assert = require("assert");
 import chai = require("chai");
+import Q = require("q");
 import sinon = require("sinon");
 import sinonChai = require("sinon-chai");
 import tl = require("vsts-task-lib/task");
@@ -220,57 +221,57 @@ describe("tomcat.getTargetUrlForDeployingWar", (): void => {
 
 describe("tomcat.execCurlCmdForDeployingWar", (): void => {
     var sandbox;
-    var execSyncStub;
+    var debugStub;
     var errorStub;
+    var execStub;
     var exitStub;
+    var getCurlPathStub;
     var execOptions = <tr.IExecOptions> { failOnStdErr: true };
     
     beforeEach((): void => {
         sandbox = sinon.sandbox.create();
-        execSyncStub = sandbox.stub(tl, "execSync");
+        debugStub = sandbox.stub(tl, "debug");
         errorStub = sandbox.stub(tl, "error");
+        execStub = sandbox.stub(tl, "exec");
         exitStub = sandbox.stub(tl, "exit");
+        getCurlPathStub = sandbox.stub(tomcat, "getCurlPath");
         
-        execSyncStub.returns(<tr.IExecResult> { code: 0 });
+        getCurlPathStub.returns("dummyCurlPath");
+        execStub.returns(Q.Promise<number>((complete, failure) => { complete (8); }));
     });
     
     afterEach((): void => {
         sandbox.restore();
     });
     
-    it("should pass correct parameters to tl.execSync", (): void => {
+    it("should pass correct parameters to tl.exec", (): void => {
         tomcat.execCurlCmdForDeployingWar("dummyCmdArg");
         
-        execSyncStub.withArgs(tomcat.getCurlPath(), "dummyCmdArg", execOptions).should.have.been.calledOnce;
+        execStub.withArgs(tomcat.getCurlPath(), "dummyCmdArg", execOptions).should.have.been.calledOnce;
     });
     
-    it("should succeed if tl.execSync succeeds", (): void => {
-        var mockResult = <tr.IExecResult> { code: 0 };   
-        execSyncStub.withArgs(tomcat.getCurlPath(), "dummyCmdArg", execOptions).returns(mockResult);
-         
-        tomcat.execCurlCmdForDeployingWar("dummyCmdArg");
-    });
-    
-    it("should fail if tl.execSync fails", (): void => {
-        var mockResult = <tr.IExecResult> { 
-            code: 1,
-            error: new Error("Just failed") 
-        };   
-        execSyncStub.withArgs(tomcat.getCurlPath(), "dummyCmdArg", execOptions).returns(mockResult);
-         
-        tomcat.execCurlCmdForDeployingWar("dummyCmdArg");
+    it("should succeed if tl.execSync succeeds", (done): void => {
+        var mockExitCode = 10;
+        var mockResult = Q.Promise<number>((complete, failure) => { complete (mockExitCode); });
+        execStub.returns(mockResult);
         
-        errorStub.withArgs(mockResult.error.message).should.have.been.calledOnce;
-        exitStub.withArgs(mockResult.code).should.have.been.calledOnce;
+        tomcat.execCurlCmdForDeployingWar("dummyCmdArg").then((code) => {
+            execStub.withArgs(tomcat.getCurlPath(), "dummyCmdArg", execOptions).should.have.been.calledOnce;
+            debugStub.withArgs("Exit code: " + mockExitCode).should.have.been.calledOnce;
+            exitStub.withArgs(mockExitCode).should.have.been.calledOnce;
+        }).done(done);
     });
     
-    it("should fail with no error message if tl.execSync fails with no error message", (): void => {
-        var mockResult = <tr.IExecResult> { code: 1 };   
-        execSyncStub.withArgs(tomcat.getCurlPath(), "dummyCmdArg", execOptions).returns(mockResult);
+    it("should fail if tl.execSync fails", (done): void => {
+        var mockReason = "just failed";
+        var mockResult = Q.Promise<number>((complete, failure) => { failure(mockReason); });   
+        execStub.returns(mockResult);        
          
-        tomcat.execCurlCmdForDeployingWar("dummyCmdArg");
-        
-        exitStub.withArgs(mockResult.code).should.have.been.calledOnce;
+        tomcat.execCurlCmdForDeployingWar("dummyCmdArg").then((code) => {
+            execStub.withArgs(tomcat.getCurlPath(), "dummyCmdArg", execOptions).should.have.been.calledOnce;
+            exitStub.withArgs(1).should.have.been.calledOnce;
+            errorStub.withArgs(mockReason).should.have.been.calledOnce;
+        }).done(done);
     });
 });
 
