@@ -39,10 +39,9 @@ export function getTargetUrlForDeployingWar(tomcatUrl: string, warfile: string, 
         tl.exit(1);
     }
     
-    var warfileBaseName = path.basename(warfile, ".war");
+    var warfileBaseName = path.basename(warfile.replace("\\\\", "\\"), ".war"); // basename doesn't work with \\\\share\\file.war but works with \\sahre\\file.war
     var context = (context == "/") ? context + warfileBaseName : context;
-    // encode all characters like space and '&'. Exclude '/' for readability
-    context = encodeURIComponent(context).replace(/%2F/g, "/");
+    context = encodeURIComponent(context).replace(/%2F/g, "/"); // encode all characters like space and '&'. Exclude '/' for readability
     
     if (serverVersion == "6.x") {
         return tomcatUrl + "/manager/deploy?path=" + context + "&update=true";

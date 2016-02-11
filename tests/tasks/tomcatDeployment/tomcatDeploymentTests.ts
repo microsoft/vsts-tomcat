@@ -183,7 +183,7 @@ describe("tomcat.getTargetUrlForDeployingWar", (): void => {
     });
     
     it("should work with windows path", (): void => {
-        var warfileValues: string[] = ["c:\\windows\\java_demo.war", "c:\\\\windows\\\\java_demo.war", "c:\\\\windows\\\\java_demo"];
+        var warfileValues: string[] = ["c:\\windows\\java_demo.war", "c:\\\\windows\\\\java_demo.war", "c:\\\\windows\\\\java_demo", "\\\\buildshare\\java_demo.war"];
         warfileValues.forEach(function(warfile: string) {
             var targetUrl = tomcat.getTargetUrlForDeployingWar("http://localhost:8080", warfile, "/", version6);
         
