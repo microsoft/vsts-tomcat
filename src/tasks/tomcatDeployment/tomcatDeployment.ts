@@ -14,7 +14,6 @@ export function deploy(): void {
         
     tl.debug("tomcatUrl: " + tomcatUrl);
     tl.debug("username: " + username);
-    tl.debug("password: " + password);
     tl.debug("warfile: " + warfile);
     tl.debug("context: " + context);
     tl.debug("serverVersion: " + serverVersion);
