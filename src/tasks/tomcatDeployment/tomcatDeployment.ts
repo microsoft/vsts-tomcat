@@ -12,12 +12,6 @@ export function deploy(): void {
     var context = tl.getInput("context", true);
     var serverVersion = tl.getInput("serverVersion", true);
         
-    tl.debug("tomcatUrl: " + tomcatUrl);
-    tl.debug("username: " + username);
-    tl.debug("warfile: " + warfile);
-    tl.debug("context: " + context);
-    tl.debug("serverVersion: " + serverVersion);
-    
     this.deployWarFile(tomcatUrl, username, password, warfile, context, serverVersion);
 }
 
