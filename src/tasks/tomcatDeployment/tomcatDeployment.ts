@@ -1,5 +1,6 @@
 /// <reference path="../../../typings/vsts-task-lib/vsts-task-lib.d.ts" />
 
+import fs = require("fs");
 import path = require("path");
 import tl = require("vsts-task-lib/task");
 import tr = require("vsts-task-lib/toolrunner");
@@ -46,8 +47,8 @@ export function getTargetUrlForDeployingWar(tomcatUrl: string, warfile: string, 
 
 export function getCurlCmdForDeployingWar(username: string, password: string, warfile: string, url: string): string {
     var args = "--stderr -";
-    args += " -i";
     args += " --fail";
+    args += " -o \"" + this.getTomcatResponseOutputFileName() + "\""; 
     args += " -u " + username + ":\"" + password + "\"";
     args += " -T \"" + warfile + "\"";
     args += " " + url;
@@ -62,7 +63,12 @@ export function getCurlCmdForDeployingWar(username: string, password: string, wa
 export function execCurlCmdForDeployingWar(cmdArg: string): any {
     return tl.exec(this.getCurlPath(), cmdArg, <tr.IExecOptions> { failOnStdErr: true })
     .then((code) => {
-        tl.debug("Exit code: " + code);
+        var tomcatResponse = this.getTomcatResponse();
+        if (tomcatResponse.startsWith("FAIL")) {
+            tl.error(tomcatResponse);
+            tl.exit(1);
+        }
+        tl.debug(tomcatResponse);
         tl.exit(code);
     }).
     fail((reason) => {
@@ -74,4 +80,16 @@ export function execCurlCmdForDeployingWar(cmdArg: string): any {
 export function getCurlPath(): string {
     var curlPath = tl.which("curl", true);
     return curlPath;
+}
+
+var tomcatResponseOutputFileName: string;
+export function getTomcatResponseOutputFileName(): string {
+    if (!tomcatResponseOutputFileName) {
+        tomcatResponseOutputFileName = path.join(process.env["Agent.HomeDirectory"], "_diag", "tomcatResponse_" + Date.now() + ".txt");
+    }
+    return tomcatResponseOutputFileName;
+}
+
+export function getTomcatResponse(): string {
+    return fs.readFileSync(this.getTomcatResponseOutputFileName()).toString();
 }
