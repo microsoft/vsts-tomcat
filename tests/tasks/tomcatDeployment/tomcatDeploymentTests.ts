@@ -330,7 +330,7 @@ describe("tomcat.getTomcatResponseOutputFileName", (): void => {
         sandbox = sinon.sandbox.create();
         dateNowStub = sandbox.stub(Date, "now");
         
-        process.env["Agent.HomeDirectory"] = agentHomeDirectory;
+        process.env["AGENT_HOMEDIRECTORY"] = agentHomeDirectory;
     });
     
     afterEach((): void => {
