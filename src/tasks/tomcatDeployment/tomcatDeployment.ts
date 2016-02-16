@@ -1,6 +1,7 @@
 /// <reference path="../../../typings/vsts-task-lib/vsts-task-lib.d.ts" />
 
 import fs = require("fs");
+import os = require("os");
 import path = require("path");
 import tl = require("vsts-task-lib/task");
 import tr = require("vsts-task-lib/toolrunner");
@@ -64,6 +65,7 @@ export function execCurlCmdForDeployingWar(cmdArg: string): any {
     return tl.exec(this.getCurlPath(), cmdArg, <tr.IExecOptions> { failOnStdErr: true })
     .then((code) => {
         var tomcatResponse = this.getTomcatResponse();
+        this.cleanTomcatResponseOutputFile();
         if (tomcatResponse.indexOf("FAIL") == 0) {
             tl.error(tomcatResponse);
             tl.exit(1);
@@ -85,11 +87,15 @@ export function getCurlPath(): string {
 var tomcatResponseOutputFileName: string;
 export function getTomcatResponseOutputFileName(): string {
     if (!tomcatResponseOutputFileName) {
-        tomcatResponseOutputFileName = path.join(process.env["AGENT_HOMEDIRECTORY"], "_diag", "tomcatResponse_" + Date.now() + ".txt");
+        tomcatResponseOutputFileName = path.join(os.tmpdir(), "tomcatResponse_" + Date.now() + ".txt");
     }
     return tomcatResponseOutputFileName;
 }
 
 export function getTomcatResponse(): string {
     return fs.readFileSync(this.getTomcatResponseOutputFileName()).toString();
+}
+
+export function cleanTomcatResponseOutputFile(): void {
+    fs.unlinkSync(this.getTomcatResponseOutputFileName());
 }
