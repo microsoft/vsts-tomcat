@@ -22,6 +22,7 @@ If not detected automatically, add manually
 ![Add Apache Tomcat Deployment task](images/addTomcatDeploymentTask.png)
  
 2. Fill-in the task parameters as described below:
+###
 |  Parameter Name                       |  Description                                                                                                                                                                      |
 |---------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 |  Tomcat Server URL                    | The URL for the Tomcat Server e.g. http://localhost:8080<br>"/manager" will be appended to your Server URL to talk to the Tomcat manager.                        |
@@ -30,7 +31,6 @@ If not detected automatically, add manually
 |  WAR File                             | The absolute path to the WAR file.<br>Use <a href="https://msdn.microsoft.com/en-us/Library/vs/alm/Build/scripts/variables">(Build Variables)</a> to fill in the path of the agent e.g. $(Agent.BuildDirectory)\$(Build.Repository.Name)\Demo.war  |
 |  Tomcat Server Version                | Choose the appropriate Tomcat Server Version.<br>Supports: Tomcat 6.x, 7.x and 8.x.                                                                       |
  
-**Sample**:
 ![Fill-in task parameters](images/fillinTaskParams.png)
  
 3. Define the variables used in the task parameters       
