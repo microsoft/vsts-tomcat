@@ -1,9 +1,9 @@
 {
   "name": "vsts-tomcat",
-  "version": "0.0.1",
-  "description": "Tomcat extension with tasks for Visual Studio Team Services",
+  "version": "0.1.0",
+  "description": "Tomcat extension for Visual Studio Team Services",
   "main": "gulpfile.js",
-  "author": "Microsoft",
+  "author": "Microsoft Corporation",
   "license": "MIT",
   "repository": {
     "type": "git",

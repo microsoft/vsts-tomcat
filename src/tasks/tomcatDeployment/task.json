@@ -12,8 +12,8 @@
     "author": "Microsoft Corporation",
     "version": {
         "Major": 0,
-        "Minor": 0,
-        "Patch": 1 
+        "Minor": 1,
+        "Patch": 0 
     },
     "demands": [
         "curl"
@@ -25,7 +25,7 @@
             "label": "Tomcat Server URL",
             "defaultValue": "http://localhost:8080",
             "required": true,
-            "helpMarkDown": "Specify the Tomcat server url which should contain the procotol, host and port details. Example- https://test.azure.cloudapp.net:8080"
+            "helpMarkDown": "Specify the Tomcat server url which should contain the procotol, host and port details. Example- http://test.azure.cloudapp.net:8080"
         },		
         {
             "name": "Username",
@@ -41,7 +41,7 @@
             "label": "Password",
             "defaultValue": "",
             "required": true,
-			"helpMarkDown": "Specify the password to connect to the Tomcat manager. Tomcat manager should be running on the server."
+			"helpMarkDown": "Specify the password to connect to the Tomcat manager. Use secure variables like $(password) to avoid getting it printed in diagnostic logs."
         },
         {
             "name": "Warfile",
