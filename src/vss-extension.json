@@ -1,6 +1,6 @@
 {
     "manifestVersion": 1,
-    "extensionId": "Vsts-Tomcat",
+    "extensionId": "vsts-tomcat",
     "name": "Tomcat Deployment",
     "version": "0.1.0",
     "publisher": "ms-vscs-rm",
@@ -49,7 +49,7 @@
     ],
     "contributions": [
         {
-            "id": "tomcatDeployment-task",
+            "id": "tomcatdeployment-task",
             "type": "ms.vss-distributed-task.task",
             "targets": [
                 "ms.vss-distributed-task.tasks"
