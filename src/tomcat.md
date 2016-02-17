@@ -10,10 +10,10 @@ This extension installs the following components
 The deployment tasks use cURL.
  1. Install cURL on Build/Release agent
  2. Make sure cURL is reported as an agent capability
- ![Ensure cURL is added as demand for Windows agent](images/cURLDemandWindows.png)
+ ![Ensure cURL is added as demand for Linux agent](images/cURLDemandLinux.png)
  
  If not detected automatically, add manually
- ![Ensure cURL is added as demand for Linux agent](images/cURLDemandLinux.png)
+ ![Ensure cURL is added as demand for Windows agent](images/cURLDemandWindows.png)
  
  
 
