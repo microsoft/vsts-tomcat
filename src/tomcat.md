@@ -28,9 +28,9 @@ The deployment tasks use cURL.
  |  Tomcat Manager Username And Password | These should match the credentials set in conf/tomcat-users.xml when you configured Tomcat.<br>The user should have "manager-script" role set.             |
  |  Application Context                  | Specifies where the application should sit on the Tomcat server once deployed e.g. /Test                                                                                          |
  |  WAR File                             | The absolute path to the WAR file.<br>Use <a href="https://msdn.microsoft.com/en-us/Library/vs/alm/Build/scripts/variables">(Build Variables)</a> to fill in the path of the agent e.g. $(Agent.BuildDirectory)\$(Build.Repository.Name)\Demo.war  |
- |  Tomcat Server Version                | Choose the appropriate Tomcat Server Version.<br>Supports: Tomcat 6.x, 7.x and 8.x.
+ |  Tomcat Server Version                | Choose the appropriate Tomcat Server Version.<br>Supports: Tomcat 6.x, 7.x and 8.x.                                                                       |
  
- Sample:
+ **Sample**:
  ![Fill-in task parameters](images/fillinTaskParams.png)
  
  3. Define the variables used in the task parameters       
