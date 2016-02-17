@@ -25,7 +25,7 @@
             "label": "Tomcat Server URL",
             "defaultValue": "http://localhost:8080",
             "required": true,
-            "helpMarkDown": "Specify the Tomcat server url which should contain the procotol, host and port details. Example- https://test.azure.cloudapp.net:8080"
+            "helpMarkDown": "Specify the Tomcat server url which should contain the procotol, host and port details. Example- http://test.azure.cloudapp.net:8080"
         },		
         {
             "name": "Username",
