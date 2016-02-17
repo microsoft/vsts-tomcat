@@ -1,10 +1,10 @@
 {
     "manifestVersion": 1,
-    "id": "tomcatDeploymentApp",
+    "extensionId": "Vsts-Tomcat",
     "name": "Tomcat Deployment",
     "version": "0.1.0",
-    "publisher": "ms",
-    "description": "Deploy application (war file) to a tomcat server",
+    "publisher": "ms-vscs-rm",
+    "description": "Deploy applications to a tomcat server",
     "public": true,
     "galleryFlags": [
         "Preview"
@@ -16,14 +16,10 @@
     "categories": [
         "Build and release"
     ],
-    "tags": [],
+    "tags": [
+        "tomcat"
+    ],
     "links": {
-        "support": {
-            "uri": "https://github.com/Microsoft/vsts-tomcat"
-        },
-        "pricing": {
-            "uri": "https://github.com/Microsoft/vsts-tomcat"
-        },
         "home": {
             "uri": "https://github.com/Microsoft/vsts-tomcat"
         }
@@ -45,9 +41,6 @@
             "path": "images",
             "addressable": true
         }
-    ],
-    "scopes": [
-        "vso.build_execute"
     ],
     "targets": [
         {
