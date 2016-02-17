@@ -32,8 +32,7 @@ If not detected automatically, add manually
 |  Tomcat Server Version                | Choose the appropriate Tomcat Server Version.<br>Supports: Tomcat 6.x, 7.x and 8.x.                                                                       |
  
 ![Fill-in task parameters](images/fillinTaskParams.png)
- 
-3. Define the variables used in the task parameters       
+
 ![Define variables used in definition](images/defineVariables.png)
  
 ##Compatibility
