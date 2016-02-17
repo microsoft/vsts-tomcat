@@ -1,14 +1,14 @@
-#Tomcat Deployment Task
+#Apache Tomcat Deployment Task
 
 ###Overview
-Deploy your Java Web application with Tomcat 6,7 or 8. The Tomcat task uses HTTP-based scripting interface to the Tomcat manager application that ships with Tomcat.
+Deploy your Java web application with Tomcat 6,7 or 8. This task uses HTTP-based scripting interface to the Tomcat manager application that ships with Tomcat.
  
 ###Features
 * Deploy / Re-deploy to Tomcat manager. Copies the war file to the target automatically.
 * Use pre-defined Build / Release Variables or your own custom variables.
  
 ###Prerequisites
-* Curl should be installed on the Build/Release agent.
+* cURL should be installed on the Build/Release agent.
 * Tomcat should be configured with the manager up and running.
 
 ###Compatibility
@@ -26,5 +26,5 @@ Deploy your Java Web application with Tomcat 6,7 or 8. The Tomcat task uses HTTP
 * Response from Tomcat is written to a temp file under OS temporary directory.
 
 ###Known Issues
-* 'Curl' demand may not be detected automatically on Windows agents. Add it manually.
+* 'cURL' demand may not be detected automatically on Windows agents. Add it manually.
  

@@ -1,10 +1,10 @@
 {
     "manifestVersion": 1,
-    "extensionId": "vsts-tomcat",
-    "name": "Tomcat Deployment",
+    "extensionId": "apachetomcat",
+    "name": "Apache Tomcat Deployment",
     "version": "0.1.0",
     "publisher": "ms-vscs-rm",
-    "description": "Deploy applications to a tomcat server",
+    "description": "Deploy web applications to a tomcat server",
     "public": true,
     "galleryFlags": [
         "Preview"

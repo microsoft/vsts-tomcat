@@ -1,5 +1,5 @@
 # vsts-tomcat
-This is the source code repository of Tomcat extension for Visual Studio Team Services.
+This is the source code repository of Apache Tomcat extension for Visual Studio Team Services.
 This extension contains VSTS build tasks for deploying apps to Tomcat.
 
 ## Working with this repo
