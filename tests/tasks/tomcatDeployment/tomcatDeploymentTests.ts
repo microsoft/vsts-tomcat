@@ -5,6 +5,9 @@ import * as tomcat from "../../../src/tasks/tomcatDeployment/tomcatDeployment";
 
 import assert = require("assert");
 import chai = require("chai");
+import fs = require("fs");
+import os = require("os");
+import path = require("path");
 import Q = require("q");
 import sinon = require("sinon");
 import sinonChai = require("sinon-chai");
@@ -57,13 +60,16 @@ describe("tomcat.deploy", (): void => {
 describe("tomcat.deployWarFile", (): void => {
     var sandbox;
     var execStub;
+    var getResponseFileStub;
     var getUrlStub;
 
     beforeEach((): void => {
         sandbox = sinon.sandbox.create();
         execStub = sandbox.stub(tomcat, "execCurlCmdForDeployingWar");
+        getResponseFileStub = sandbox.stub(tomcat, "getTomcatResponseOutputFileName");
         getUrlStub = sandbox.stub(tomcat, "getTargetUrlForDeployingWar");
         
+        getResponseFileStub.returns("c:\\agent\\_diag\\tomcatResponse_12345.txt");
         getUrlStub.withArgs(tomcatUrl, warfile, context, serverVersion).returns("dummyUrl");       
     });
     
@@ -94,11 +100,20 @@ describe("tomcat.deployWarFile", (): void => {
 });
 
 describe("tomcat.getCurlCmdForDeployingWar", (): void => {
+    var sandbox;
+    var getResponseFileStub;
+    var responseFileName = "c:\\agent\\_diag\\tomcatResponse_12345.txt";
+    
     beforeEach((): void => {
+        sandbox = sinon.sandbox.create();
+        getResponseFileStub = sandbox.stub(tomcat, "getTomcatResponseOutputFileName");
+        
+        getResponseFileStub.returns(responseFileName);
         process.env["system_debug"] = false;
     });
     
     afterEach((): void => {
+        sandbox.restore();
         process.env["system_debug"] = false;
     });
     
@@ -106,7 +121,7 @@ describe("tomcat.getCurlCmdForDeployingWar", (): void => {
     it("should properly construct the curl cmd arg", (): void => {
         var arg = tomcat.getCurlCmdForDeployingWar("username", "password", "warfile", "http://url/warfile");
         
-        assert.strictEqual(arg, '--stderr - -i --fail -u username:"password" -T "warfile" http://url/warfile');
+        assert.strictEqual(arg, '--stderr - --fail -o "c:\\agent\\_diag\\tomcatResponse_12345.txt" -u username:"password" -T "warfile" http://url/warfile');
             
     });
     
@@ -115,7 +130,7 @@ describe("tomcat.getCurlCmdForDeployingWar", (): void => {
         
         var arg = tomcat.getCurlCmdForDeployingWar("username", "password", "warfile", "http://url/warfile");
         
-        assert.strictEqual(arg, '--stderr - -i --fail -u username:"password" -T "warfile" http://url/warfile -v');
+        assert.strictEqual(arg, '--stderr - --fail -o "c:\\agent\\_diag\\tomcatResponse_12345.txt" -u username:"password" -T "warfile" http://url/warfile -v');
     });
     /* tslint:enable:quotemark */
 });
@@ -124,7 +139,7 @@ describe("tomcat.getCurlPath", (): void => {
     var sandbox;
     
     beforeEach((): void => {
-        sandbox = sinon.sandbox.create(); 
+        sandbox = sinon.sandbox.create();     
     });
     
     afterEach((): void => {
@@ -228,23 +243,28 @@ describe("tomcat.getTargetUrlForDeployingWar", (): void => {
 
 describe("tomcat.execCurlCmdForDeployingWar", (): void => {
     var sandbox;
+    var cleanTempFileStub;
     var debugStub;
     var errorStub;
     var execStub;
     var exitStub;
     var getCurlPathStub;
+    var getTomcatResponseStub;
     var execOptions = <tr.IExecOptions> { failOnStdErr: true };
     
     beforeEach((): void => {
         sandbox = sinon.sandbox.create();
+        cleanTempFileStub = sandbox.stub(tomcat, "cleanTomcatResponseOutputFile");
         debugStub = sandbox.stub(tl, "debug");
         errorStub = sandbox.stub(tl, "error");
         execStub = sandbox.stub(tl, "exec");
         exitStub = sandbox.stub(tl, "exit");
         getCurlPathStub = sandbox.stub(tomcat, "getCurlPath");
+        getTomcatResponseStub = sandbox.stub(tomcat, "getTomcatResponse");
         
         getCurlPathStub.returns("dummyCurlPath");
-        execStub.returns(Q.Promise<number>((complete, failure) => { complete (8); }));
+        getTomcatResponseStub.returns("OK - Deployment succeeded");
+        execStub.returns(Q.Promise<number>((complete, failure) => { complete (0); }));
     });
     
     afterEach((): void => {
@@ -257,19 +277,21 @@ describe("tomcat.execCurlCmdForDeployingWar", (): void => {
         execStub.withArgs(tomcat.getCurlPath(), "dummyCmdArg", execOptions).should.have.been.calledOnce;
     });
     
-    it("should succeed if tl.execSync succeeds", (done): void => {
+    it("should succeed if tl.exec succeeds", (done): void => {
         var mockExitCode = 10;
+        var mockResponse = "OK - Deployment succeeded";
         var mockResult = Q.Promise<number>((complete, failure) => { complete (mockExitCode); });
         execStub.returns(mockResult);
+        getTomcatResponseStub.returns(mockResponse);
         
         tomcat.execCurlCmdForDeployingWar("dummyCmdArg").then((code) => {
             execStub.withArgs(tomcat.getCurlPath(), "dummyCmdArg", execOptions).should.have.been.calledOnce;
-            debugStub.withArgs("Exit code: " + mockExitCode).should.have.been.calledOnce;
+            debugStub.withArgs(mockResponse).should.have.been.calledOnce;
             exitStub.withArgs(mockExitCode).should.have.been.calledOnce;
         }).done(done);
     });
     
-    it("should fail if tl.execSync fails", (done): void => {
+    it("should fail if tl.exec fails", (done): void => {
         var mockReason = "just failed";
         var mockResult = Q.Promise<number>((complete, failure) => { failure(mockReason); });   
         execStub.returns(mockResult);        
@@ -279,6 +301,125 @@ describe("tomcat.execCurlCmdForDeployingWar", (): void => {
             exitStub.withArgs(1).should.have.been.calledOnce;
             errorStub.withArgs(mockReason).should.have.been.calledOnce;
         }).done(done);
+    });
+    
+    it("should pass if the response from tomcat is OK", (done): void => {
+        getTomcatResponseStub.returns("OK - deployment succeeded");
+        
+        tomcat.execCurlCmdForDeployingWar("dummyCmdArg").then((code) => {
+            execStub.withArgs(tomcat.getCurlPath(), "dummyCmdArg", execOptions).should.have.been.calledOnce;
+            exitStub.withArgs(0).should.have.been.calledOnce;
+        }).done(done);
+    });
+    
+    it("should fail if the response from tomcat is FAIL", (done): void => {
+        var mockFailureMessage = "FAIL - deployment failed";
+        getTomcatResponseStub.returns(mockFailureMessage);
+        
+        tomcat.execCurlCmdForDeployingWar("dummyCmdArg").then((code) => {
+            execStub.withArgs(tomcat.getCurlPath(), "dummyCmdArg", execOptions).should.have.been.calledOnce;
+            errorStub.withArgs(mockFailureMessage).should.have.been.calledOnce;
+            exitStub.withArgs(1).should.have.been.calledOnce;
+        }).done(done);
+    });
+    
+    it("should delete the temporary tomcat response output file", (done): void => {
+        tomcat.execCurlCmdForDeployingWar("dummyCmdArg").then((code) => {
+            cleanTempFileStub.should.have.been.calledOnce;
+        }).done(done);
+    });
+});
+
+describe("tomcat.getTomcatResponseOutputFileName", (): void => {
+    var sandbox;
+    var dateNowStub;
+    var osTempDirStub;
+    var osTempDirectory = "c:\\agent";
+    
+    beforeEach((): void => {
+        sandbox = sinon.sandbox.create();
+        dateNowStub = sandbox.stub(Date, "now");
+        osTempDirStub = sandbox.stub(os, "tmpdir");
+        
+        osTempDirStub.returns(osTempDirectory);
+    });
+    
+    afterEach((): void => {
+        sandbox.restore();
+    });
+    
+    it("should contain current timestamp", (): void => {
+        var dateNow = 12345;
+        dateNowStub.returns(dateNow);
+        
+        var fileName = tomcat.getTomcatResponseOutputFileName();
+        
+        assert.strictEqual(fileName, path.join(osTempDirectory, "tomcatResponse_" + dateNow.toString() + ".txt"));
+    });
+    
+    it("should return the same value always", (): void => {
+        var dateNow = 12345;
+        dateNowStub.onFirstCall().returns(dateNow);
+        dateNowStub.onSecondCall().returns(dateNow + 100);
+        
+        var fileName1 = tomcat.getTomcatResponseOutputFileName();
+        var fileName2 = tomcat.getTomcatResponseOutputFileName();
+        
+        assert.strictEqual(fileName1, fileName2);
+    });
+});
+
+describe("tomcat.getTomcatResponse", (): void => {
+    var sandbox;
+    var getResponseFileStub;
+    var fsReadStub;
+    
+    beforeEach((): void => {
+        sandbox = sinon.sandbox.create();
+        getResponseFileStub = sandbox.stub(tomcat, "getTomcatResponseOutputFileName");
+        fsReadStub = sandbox.stub(fs, "readFileSync");
+    });
+    
+    afterEach((): void => {
+        sandbox.restore();
+    });
+    
+    it("should pass return content from the tomcatResponseOutputFile", (): void => {
+        var mockFileName = "/home/user/logs/tomcatResponse.txt";
+        getResponseFileStub.returns(mockFileName);
+        var mockResponse = "OK - Deployment succeeded";
+        fsReadStub.withArgs(mockFileName).returns(new Buffer(mockResponse));
+         
+        var response = tomcat.getTomcatResponse();
+         
+        getResponseFileStub.should.have.been.calledOnce;
+        fsReadStub.withArgs(mockFileName).should.have.been.calledOnce;
+        assert.strictEqual(response, mockResponse);
+    }); 
+});
+
+describe("tomcat.cleanTomcatResponseOutputFile", (): void => {
+    var sandbox;
+    var getResponseFileStub;
+    var fsUnlinkStub;
+    
+    beforeEach((): void => {
+        sandbox = sinon.sandbox.create();
+        getResponseFileStub = sandbox.stub(tomcat, "getTomcatResponseOutputFileName");
+        fsUnlinkStub = sandbox.stub(fs, "unlinkSync");
+    });
+    
+    afterEach((): void => {
+        sandbox.restore();
+    });
+    
+    it("should remove temp file by calling corresponding API of file system library", (): void => {
+        var mockFileName = "/tmp/tomcatResponse.txt";
+        getResponseFileStub.returns(mockFileName);
+
+        tomcat.cleanTomcatResponseOutputFile();
+        
+        fsUnlinkStub.withArgs(mockFileName).should.have.been.calledOnce;
     });
 });
 
