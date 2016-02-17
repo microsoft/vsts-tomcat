@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "tomcatDeploymentApp",
     "name": "Tomcat Deployment",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "publisher": "ms",
     "description": "Deploy application (war file) to a tomcat server",
     "public": true,
