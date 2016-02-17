@@ -41,7 +41,7 @@
             "label": "Password",
             "defaultValue": "",
             "required": true,
-			"helpMarkDown": "Specify the password to connect to the Tomcat manager. Tomcat manager should be running on the server."
+			"helpMarkDown": "Specify the password to connect to the Tomcat manager. Use secure variables like $(password) to avoid getting it printed in diagnostic logs."
         },
         {
             "name": "Warfile",
