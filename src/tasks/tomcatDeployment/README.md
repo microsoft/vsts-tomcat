@@ -22,7 +22,9 @@ Deploy your Java Web application with Tomcat 6,7 or 8. The Tomcat task uses HTTP
 |  Application Context                  | Specifies where the application should sit on the Tomcat server once deployed e.g. /Test                                                                                          |
 |  WAR File                             | The absolute path to the WAR file.<br>Use <a href="https://msdn.microsoft.com/en-us/Library/vs/alm/Build/scripts/variables">(Build Variables)</a> to fill in the path of the agent e.g. $(Agent.BuildDirectory)\$(Build.Repository.Name)\Demo.war  |
 |  Tomcat Server Version                | Choose the appropriate Tomcat Server Version.<br>Supports: Tomcat 6.x, 7.x and 8.x.                                                                       |
+###Notes
+* Response from Tomcat is written to a temp file under OS temporary directory.
 
 ###Known Issues
-* If 'Curl' demand is not detected automatically on Windows agents, add it manually.
+* 'Curl' demand may not be detected automatically on Windows agents. Add it manually.
  
