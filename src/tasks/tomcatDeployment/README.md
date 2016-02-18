@@ -20,7 +20,7 @@ Deploy your Java web application with Tomcat 6,7 or 8. This task uses HTTP-based
 |  Tomcat Server URL                    | The URL for the Tomcat Server e.g. http://localhost:8080<br>"/manager" will be appended to your Server URL to talk to the Tomcat manager.                        |
 |  Tomcat Manager Username And Password | These should match the credentials set in conf/tomcat-users.xml when you configured Tomcat.<br>The user should have "manager-script" role set.             |
 |  Application Context                  | Specifies where the application should sit on the Tomcat server once deployed e.g. /Test                                                                                          |
-|  WAR File                             | The absolute path to the WAR file.<br>Use <a href="http://aka.ms/vstsbuildvariables">(Build Variables)</a> to fill in the path of the agent e.g. $(Agent.BuildDirectory)\$(Build.Repository.Name)\Demo.war  |
+|  WAR File                             | The absolute path to the WAR file.<br>Use pre-defined variables in [Build](http://go.microsoft.com/fwlink/?LinkId=550988)/[Release](http://go.microsoft.com/fwlink?linkid=615899) for the path to the WAR file e.g. $(Agent.BuildDirectory)\$(Build.Repository.Name)\Demo.war, $(Agent.ReleaseDirectory)\Deploy\Demo.war |
 |  Tomcat Server Version                | Choose the appropriate Tomcat Server Version.<br>Supports: Tomcat 6.x, 7.x and 8.x.                                                                       |
 ###Notes
 * Response from Tomcat is written to a temp file under OS temporary directory.
