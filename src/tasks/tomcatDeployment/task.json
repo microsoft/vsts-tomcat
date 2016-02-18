@@ -72,7 +72,7 @@
             "helpMarkDown": "Specify tomcat server version."
         }
     ],
-    "instanceNameFormat": "Deploy application (war file) to a tomcat server",
+    "instanceNameFormat": "Deploy application to a tomcat server",
     "execution": {
         "Node": {
             "target": "invokeTomcatDeployment.js",
