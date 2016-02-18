@@ -98,13 +98,13 @@ describe("tomcat.deployWarFile", (): void => {
         execStub.withArgs(tomcat.getCurlCmdForDeployingWar(username, " " + password + " ", warfile, "dummyUrl")).should.have.been.calledOnce;
     });
     
-    it("should normalize separator to / in war file", (): void => {
+    it("should replace \ with system specific separator in war file", (): void => {
         var windowsWarfile = "c:\\users\\dummy\\dummy.war";
         getUrlStub.withArgs(tomcatUrl, windowsWarfile, context, serverVersion).returns("dummyUrl");
         
         tomcat.deployWarFile(tomcatUrl, username, password, windowsWarfile, context, serverVersion);
         
-        getUrlStub.withArgs(tomcatUrl, "c:/users/dummy/dummy.war", context, serverVersion).should.have.been.calledOnce;
+        getUrlStub.withArgs(tomcatUrl, windowsWarfile.replace(/\\/g, path.sep), context, serverVersion).should.have.been.calledOnce;
     });
 });
 
