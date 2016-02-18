@@ -61,7 +61,7 @@
         },
         {
             "name": "ServerVersion",
-            "type": "radio",
+            "type": "pickList",
             "label": "Tomcat Server Version",
             "defaultValue": "7OrAbove",
             "required": true,
