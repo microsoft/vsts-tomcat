@@ -4,7 +4,7 @@ Currently the following features are available:
 * Deploy/Re-deploy to Tomcat manager. Copies the war file to the target automatically.
 
 This extension installs the following components
-* Apache Tomcat Deployment task - A Build/Release task to deploy WAR files. [Learn more](https://github.com/Microsoft/vsts-tomcat/blob/master/src/tasks/tomcatDeployment/README.md)
+* Apache Tomcat Deployment task - A Build/Release task to deploy WAR files. [Learn more](http://aka.ms/tomcatdeploymenttask)
 
 ##Usage
 The deployment tasks use cURL.
@@ -26,13 +26,13 @@ The deployment tasks use cURL.
 ![Fill-in task parameters](images/fillinTaskParams.png)
 ![Define variables used in definition](images/defineVariables.png)
 
-[Learn More](https://github.com/Microsoft/vsts-tomcat/blob/master/src/tasks/tomcatDeployment/README.md)
+[Learn More](http://aka.ms/tomcatdeploymenttask)
 
 ##Compatibility
 Supports Tomcat 6.x, 7.x and 8.x
 
 ##Contact Information
-For further information or to resolve issues, contact RM_Customer_Queries at Microsoft dot com.
+For further information, resolving issues or giving feedback contact RM_Customer_Queries at Microsoft dot com.
 
 ##Trademarks
 "Apache Tomcat" and "Tomcat" are trademarks of the Apache Software Foundation.

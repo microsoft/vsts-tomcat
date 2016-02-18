@@ -3,7 +3,7 @@
     "name": "TomcatDeployment",
     "friendlyName": "Apache Tomcat Deployment",
     "description": "Deploy application (war file) to a tomcat server.",
-	"helpMarkDown": "[More Information](https://github.com/Microsoft/vsts-tomcat/blob/master/src/tasks/tomcatDeployment/README.md)",
+	"helpMarkDown": "[More Information](http://aka.ms/tomcatdeploymenttask)",
     "category": "Deploy",
 	"visibility": [
         "Build",

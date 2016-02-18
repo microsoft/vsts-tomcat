@@ -21,7 +21,7 @@
     ],
     "links": {
         "home": {
-            "uri": "https://github.com/Microsoft/vsts-tomcat"
+            "uri": "http://aka.ms/vststomcat"
         }
     },
     "branding": {
