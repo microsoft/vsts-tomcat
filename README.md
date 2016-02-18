@@ -21,8 +21,7 @@ Test:
 $ gulp test
 ```
 
-Package:
+Package (vsix will be generated at _build/package):
 ```bash
 $ gulp package
 ```
-vsix will be generated at _build/package
