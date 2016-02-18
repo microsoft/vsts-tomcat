@@ -20,7 +20,7 @@ chai.use(sinonChai);
 var tomcatUrl = "http://localhost:8080";
 var username = "dummyusername";
 var password = "dummypassword";
-var warfile = "\\users\\dummyusername\\dummywarfile.war";
+var warfile = "/users/dummyusername/dummywarfile.war";
 var context = "/dummycontext";
 var serverVersion = "6.x";
 
@@ -96,6 +96,15 @@ describe("tomcat.deployWarFile", (): void => {
         
         getUrlStub.withArgs(tomcatUrl, warfile, context, serverVersion).should.have.been.calledOnce;
         execStub.withArgs(tomcat.getCurlCmdForDeployingWar(username, " " + password + " ", warfile, "dummyUrl")).should.have.been.calledOnce;
+    });
+    
+    it("should normalize separator to / in war file", (): void => {
+        var windowsWarfile = "c:\\users\\dummy\\dummy.war";
+        getUrlStub.withArgs(tomcatUrl, windowsWarfile, context, serverVersion).returns("dummyUrl");
+        
+        tomcat.deployWarFile(tomcatUrl, username, password, windowsWarfile, context, serverVersion);
+        
+        getUrlStub.withArgs(tomcatUrl, "c:/users/dummy/dummy.war", context, serverVersion).should.have.been.calledOnce;
     });
 });
 

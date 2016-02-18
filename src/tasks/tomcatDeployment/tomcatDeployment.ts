@@ -24,6 +24,8 @@ export function deployWarFile(tomcatUrl: string, username: string, password: str
     context = context.trim();
     serverVersion = serverVersion.trim();
     
+    warfile = warfile.replace(new RegExp("\\" + path.sep, "g"), "/");
+    
     var targetUrl = this.getTargetUrlForDeployingWar(tomcatUrl, warfile, context, serverVersion);
     this.execCurlCmdForDeployingWar(this.getCurlCmdForDeployingWar(username, password, warfile, targetUrl));
 }
