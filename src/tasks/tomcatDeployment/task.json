@@ -1,7 +1,7 @@
 {
     "id": "5D93DBE2-E57F-4B7C-A872-1E6B80A01904",
     "name": "TomcatDeployment",
-    "friendlyName": "Apache Tomcat Deployment",
+    "friendlyName": "Deploy to Apache Tomcat",
     "description": "Deploy application to a tomcat server.",
 	"helpMarkDown": "[More Information](http://aka.ms/tomcatdeploymenttask)",
     "category": "Deploy",
