@@ -9,6 +9,7 @@ Once:
 ```bash
 $ npm install
 $ npm install gulp -g
+$ npm install tfx-cli -g
 ```
 
 Build:
