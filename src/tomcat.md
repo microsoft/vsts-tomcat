@@ -36,3 +36,4 @@ For further information, resolving issues or giving feedback [send mail](mailto:
 
 ##Trademarks
 "Apache Tomcat" and "Tomcat" are trademarks of the Apache Software Foundation.
+The Apache Tomcat logo is a trademark of the Apache Software Foundation.
