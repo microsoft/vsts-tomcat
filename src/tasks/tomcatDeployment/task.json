@@ -2,7 +2,7 @@
     "id": "5D93DBE2-E57F-4B7C-A872-1E6B80A01904",
     "name": "TomcatDeployment",
     "friendlyName": "Deploy to Apache Tomcat",
-    "description": "Deploy application to a tomcat server.",
+    "description": "Deploy application to a Tomcat server.",
 	"helpMarkDown": "[More Information](http://aka.ms/tomcatdeploymenttask)",
     "category": "Deploy",
 	"visibility": [
@@ -25,7 +25,7 @@
             "label": "Tomcat Server URL",
             "defaultValue": "http://localhost:8080",
             "required": true,
-            "helpMarkDown": "Specify the Tomcat server url which should contain the procotol, host and port details. Example- http://test.azure.cloudapp.net:8080"
+            "helpMarkDown": "Specify the Tomcat server URL, including the procotol, host and port details. Example- http://test.azure.cloudapp.net:8080"
         },		
         {
             "name": "Username",
@@ -33,7 +33,7 @@
             "label": "Tomcat Manager Username",
             "defaultValue": "",
             "required": true,
-            "helpMarkDown": "Specify the user name to connect to the Tomcat manager. Tomcat manager should be running on the server."
+            "helpMarkDown": "Specify the user name to connect to Tomcat Manager. Tomcat Manager should be running on the server."
         },
         {
             "name": "Password",
@@ -41,7 +41,7 @@
             "label": "Password",
             "defaultValue": "",
             "required": true,
-			"helpMarkDown": "Specify the password to connect to the Tomcat manager. <br>It can accept variable defined in Build/Release definitions as '$(passwordVariable)'. <br>You may mark variable type as 'secret' to secure it."
+			"helpMarkDown": "Specify the password to connect to Tomcat Manager. <br>This field can accept a variable defined in Build/Release definitions as '$(passwordVariable)'. <br>You may mark variable type as 'secret' to secure it."
         },
         {
             "name": "Warfile",
@@ -49,7 +49,7 @@
             "label": "WAR File",
             "defaultValue": "",
             "required": true,
-            "helpMarkDown": "Absolute path of the war file present on the agent machine, or a UNC Share. Example- C:\\Agent\\Binaries\\Demo.war Or $(warFilePath)."
+            "helpMarkDown": "Absolute path of the WAR file present on the agent machine, or a UNC Share. Example- C:\\Agent\\Binaries\\Demo.war Or $(warFilePath)."
         },
         {
             "name": "Context",
@@ -69,10 +69,10 @@
 			     "6.x": "6.x",
                  "7OrAbove" : "7 or above"
 			},
-            "helpMarkDown": "Specify tomcat server version."
+            "helpMarkDown": "Specify Tomcat server version."
         }
     ],
-    "instanceNameFormat": "Deploy application to a tomcat server",
+    "instanceNameFormat": "Deploy application to a Tomcat server",
     "execution": {
         "Node": {
             "target": "invokeTomcatDeployment.js",

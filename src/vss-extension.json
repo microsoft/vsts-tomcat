@@ -4,7 +4,7 @@
     "name": "Apache Tomcat Deployment",
     "version": "0.1.3",
     "publisher": "ms-vscs-rm",
-    "description": "Deploy web applications to a tomcat server",
+    "description": "Deploy web applications to a Tomcat server",
     "public": true,
     "galleryFlags": [
         "Preview"
