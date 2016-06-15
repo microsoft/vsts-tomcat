@@ -1,5 +1,5 @@
 #Deploy web applications to Apache Tomcat server
-Deploy your Java web applications to a tomcat server from Visual Studio Team Services or Team Foundation Server.
+Deploy your Java web applications to a Tomcat server from Visual Studio Team Services or Team Foundation Server.
 Currently the following features are available:
 * Deploy/Re-deploy to Tomcat manager. Copies the war file to the target automatically.
 
