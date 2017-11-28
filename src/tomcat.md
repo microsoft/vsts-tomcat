@@ -32,7 +32,7 @@ The deployment tasks use cURL.
 Supports Tomcat 6.x, 7.x and 8.x
 
 ##Contact Information
-For further information, resolving issues or giving feedback [send mail](mailto:RM_Customer_Queries@microsoft.com?Subject=[Feedback]Apache Tomcat Extension).
+For further information or to resolve issues, contact [Developer Community Forum](https://developercommunity.visualstudio.com/spaces/21/index.html).
 
 ##Trademarks
 "Apache Tomcat", "Tomcat" and the Apache Tomcat logo are trademarks of the Apache Software Foundation.
