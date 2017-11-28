@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "extensionId": "apachetomcat",
     "name": "Apache Tomcat Deployment",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "publisher": "ms-vscs-rm",
     "description": "Deploy web applications to a Tomcat server",
     "public": true,
