@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "extensionId": "apachetomcat",
     "name": "Apache Tomcat Deployment",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "publisher": "ms-vscs-rm",
     "description": "Deploy web applications to a Tomcat server",
     "public": true,
@@ -17,11 +17,15 @@
         "Build and release"
     ],
     "tags": [
-        "tomcat"
+        "Tomcat",
+        "Java"
     ],
     "links": {
         "home": {
             "uri": "http://aka.ms/vststomcat"
+        },
+        "support": {
+            "uri": "https://github.com/Microsoft/vsts-tomcat/issues"
         }
     },
     "branding": {
