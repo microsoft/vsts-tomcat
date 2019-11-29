@@ -32,7 +32,6 @@
             "variable-declaration": "nospace"
         }],
         "no-internal-module": true,
-        "no-inferrable-types": true,
-        "type-operator-spacing": true
+        "no-inferrable-types": true
   }
 }

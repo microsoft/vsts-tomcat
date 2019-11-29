@@ -31,44 +31,48 @@ var compilation = tsb.create({
     verbose: false
 });
 
-gulp.task("clean", function() {
-    return del([buildDirectory]);
-});
+exports.clean = gulp.series(clean);
+exports.lint = gulp.series(clean, lint);
+exports.compile = gulp.series(clean, lint, compile);
+exports.build = gulp.series(clean, lint, compile, build);
+exports.test = gulp.series(clean, lint, compile, build, test);
+exports.package = gulp.series(clean, lint, compile, build, test, package);
+exports.default = gulp.series(clean, lint, compile, build, test);
 
-gulp.task("lint", ["clean"], function() {
+function clean() {
+	return del([buildDirectory]);
+}
+
+function lint() {
     return gulp.src([sourcePaths.typescriptFiles, testPaths.typescriptFiles])
-        .pipe(tslint())
-        .pipe(tslint.report("verbose"));
-});
+        .pipe(tslint({ formatter: "verbose" }))
+        .pipe(tslint.report());
+}
 
-gulp.task("compile", ["lint"], function () {
+function compile() {
     return gulp.src([sourcePaths.typescriptFiles, testPaths.typescriptFiles], { base: "." })
         .pipe(compilation())
         .pipe(gulp.dest(buildDirectory))
         .pipe(istanbul({includeUntested: true}))
         .pipe(istanbul.hookRequire());
-});
+}
 
-gulp.task("build", ["compile"], function() {
+function build() {
     return gulp.src(sourcePaths.copyFiles, { base: "." })
         .pipe(gulp.dest(buildDirectory));
-});
+}
 
-gulp.task("test", ["build"], function() {
+function test() {
     return gulp.src(testPaths.compiledTestFiles, {read: false})
-        .pipe(mocha())
-        .pipe(istanbul.writeReports({dir: codeCoverageDirectory}))
-        .pipe(istanbul.enforceThresholds({thresholds: {global: 100}}));
-});
+        .pipe(mocha());
+}
 
-gulp.task("default", ["test"]);
-
-gulp.task("package", ["test"], function() {
-    getNodeDependencies(function() {
+async function package() {
+    return getNodeDependencies(function() {
         copyNodeModulesToTasks();
-        createVsixPackage();        
+        createVsixPackage();
     });
-});
+}
 
 var getNodeDependencies = function(callback) {
     del(packageDirectory);
