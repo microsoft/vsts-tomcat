@@ -1,12 +1,16 @@
-#Deploy web applications to Apache Tomcat server
+# Deploy web applications to Apache Tomcat server
+
 Deploy your Java web applications to a Tomcat server from Visual Studio Team Services or Team Foundation Server.
 Currently the following features are available:
+
 * Deploy/Re-deploy to Tomcat manager. Copies the war file to the target automatically.
 
 This extension installs the following components
+
 * Apache Tomcat Deployment task - A Build/Release task to deploy WAR files. [Learn more](http://aka.ms/tomcatdeploymenttask)
 
-##Usage
+## Usage
+
 The deployment tasks use cURL.
 1. Install cURL on Build/Release agent
 
@@ -18,7 +22,8 @@ The deployment tasks use cURL.
  
  
 
-###Using Apache Tomcat Deployment task to deploy WAR files
+### Using Apache Tomcat Deployment task to deploy WAR files
+
 1. Open your build or release definition and add the Apache Tomcat Deployment task. The task can be found in the **Deploy** section of the **Add Tasks** dialog.
 ![Add Apache Tomcat Deployment task](images/addTomcatDeploymentTask.png)
  
@@ -28,11 +33,14 @@ The deployment tasks use cURL.
 
 [Learn More](http://aka.ms/tomcatdeploymenttask)
 
-##Compatibility
+## Compatibility
+
 Supports Tomcat 6.x, 7.x and 8.x
 
-##Contact Information
+## Contact Information
+
 For further information or to resolve issues, contact [Developer Community Forum](https://developercommunity.visualstudio.com/spaces/21/index.html).
 
-##Trademarks
+## Trademarks
+
 "Apache Tomcat", "Tomcat" and the Apache Tomcat logo are trademarks of the Apache Software Foundation.
