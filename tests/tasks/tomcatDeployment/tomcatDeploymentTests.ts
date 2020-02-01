@@ -248,6 +248,24 @@ describe("tomcat.getTargetUrlForDeployingWar", (): void => {
         
         assert.strictEqual(targetUrl, "http://localhost:8080/manager/text/deploy?path=/java_demo%20with-space%26specialChar%25&update=true");
     });
+
+    it("should ignore artifact version for tomcat 6.x versions", (): void => {
+        var targetUrl = tomcat.getTargetUrlForDeployingWar("http://localhost:8080", "demo.war", "/", version6, "0.1.0");
+        
+        assert.strictEqual(targetUrl, "http://localhost:8080/manager/deploy?path=/demo&update=true");
+    });
+
+    it("should use artifact version for tomcat 7.0 and above versions", (): void => {
+        var targetUrl = tomcat.getTargetUrlForDeployingWar("http://localhost:8080", "demo.war", "/", version7, "0.2.0");
+        
+        assert.strictEqual(targetUrl, "http://localhost:8080/manager/text/deploy?path=/demo&update=true&version=0.2.0");
+    });
+
+    it("should handle empty artifact version for tomcat 7.0 and above versions", (): void => {
+        var targetUrl = tomcat.getTargetUrlForDeployingWar("http://localhost:8080", "demo.war", "/", version7, "");
+        
+        assert.strictEqual(targetUrl, "http://localhost:8080/manager/text/deploy?path=/demo&update=true");
+    });
 });
 
 describe("tomcat.execCurlCmdForDeployingWar", (): void => {

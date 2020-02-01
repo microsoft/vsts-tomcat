@@ -27,6 +27,7 @@ Deploy your Java web application with Tomcat 6,7 or 8. This task uses HTTP-based
 |  Application Context                  | Specifies where the application should sit on the Tomcat server once deployed e.g. /Test                                                                                          |
 |  WAR File                             | The absolute path to the WAR file.<br>Use pre-defined variables in [Build](http://go.microsoft.com/fwlink/?LinkId=550988)/[Release](http://go.microsoft.com/fwlink?linkid=615899) for the path to the WAR file e.g. $(Agent.BuildDirectory)\$(Build.Repository.Name)\Demo.war, $(Agent.ReleaseDirectory)\Deploy\Demo.war |
 |  Tomcat Server Version                | Choose the appropriate Tomcat Server Version.<br>Supports: Tomcat 6.x, 7.x and 8.x.                                                                       |
+|  Artifact Version                     | Version of the artifact in case if the Tomcat parallel deployment is used. |
 ### Notes
 
 * Response from Tomcat is written to a temp file under OS temporary directory.
