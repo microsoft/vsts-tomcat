@@ -18,7 +18,7 @@
     "gulp-tsb": "^2.0.4",
     "gulp-tslint": "^8.1.4",
     "q": "^1.4.1",
-    "shelljs": "^0.6.0",
+    "shelljs": "^0.8.5",
     "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0",
     "tslint": "^5.20.1",
