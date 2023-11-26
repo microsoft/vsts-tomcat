@@ -70,6 +70,14 @@
                  "7OrAbove" : "7 or above"
 			},
             "helpMarkDown": "Specify Tomcat server version."
+        },
+        {
+            "name": "ArtifactVersion",
+            "type": "string",
+            "label": "Artifact Version",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Version of the artifact which will be used for the Tomcat parallel deployment."
         }
     ],
     "instanceNameFormat": "Deploy application to a Tomcat server",

@@ -13,24 +13,26 @@ export function deploy(): void {
     var warfile = tl.getInput("warfile", true);
     var context = tl.getInput("context", true);
     var serverVersion = tl.getInput("serverVersion", true);
+    var artifactVersion = tl.getInput("artifactVersion", false);
         
-    this.deployWarFile(tomcatUrl, username, password, warfile, context, serverVersion);
+    this.deployWarFile(tomcatUrl, username, password, warfile, context, serverVersion, artifactVersion);
 }
 
-export function deployWarFile(tomcatUrl: string, username: string, password: string, warfile: string, context: string, serverVersion: string): void {
+export function deployWarFile(tomcatUrl: string, username: string, password: string, warfile: string, context: string, serverVersion: string, artifactVersion?: string): void {
     tomcatUrl = tomcatUrl.trim();
     username = username.trim();
     warfile = warfile.trim();
     context = context.trim();
     serverVersion = serverVersion.trim();
+    artifactVersion = (artifactVersion && artifactVersion.trim()) || artifactVersion;
     
     warfile = warfile.replace(/\\/g, path.sep);
     
-    var targetUrl = this.getTargetUrlForDeployingWar(tomcatUrl, warfile, context, serverVersion);
+    var targetUrl = this.getTargetUrlForDeployingWar(tomcatUrl, warfile, context, serverVersion, artifactVersion);
     this.execCurlCmdForDeployingWar(this.getCurlCmdForDeployingWar(username, password, warfile, targetUrl));
 }
 
-export function getTargetUrlForDeployingWar(tomcatUrl: string, warfile: string, context: string, serverVersion: string): string {
+export function getTargetUrlForDeployingWar(tomcatUrl: string, warfile: string, context: string, serverVersion: string, artifactVersion?: string): string {
     if (context.charAt(0) != "/") {
         tl.error("Invalid context. Context should start with '/'");
         tl.exit(1);
@@ -44,7 +46,7 @@ export function getTargetUrlForDeployingWar(tomcatUrl: string, warfile: string, 
         return tomcatUrl + "/manager/deploy?path=" + context + "&update=true";
     }
     else {
-        return tomcatUrl + "/manager/text/deploy?path=" + context + "&update=true";        
+        return tomcatUrl + "/manager/text/deploy?path=" + context + "&update=true" + ((artifactVersion && ("&version=" + artifactVersion)) || "");        
     }
 }
 
